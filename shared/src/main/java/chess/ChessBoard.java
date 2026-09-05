@@ -78,6 +78,17 @@ public class ChessBoard {
 class Main{
     public static void main(String[] args){
         ChessBoard testBoard = new ChessBoard();
+        testBoard.addPiece(new ChessPosition(4,4),new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
         System.out.println(testBoard);
+
+        ChessPosition pos1 = new ChessPosition(3,3);
+        ChessPosition pos2 = new ChessPosition(3,3);
+        System.out.println(String.format("%d =? %d", pos1.hashCode(), pos2.hashCode()));
+        System.out.println(pos1== pos2);
+
+        ChessMove move1 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
+        ChessMove move2 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
+        System.out.println(String.format("%d =? %d", move1.hashCode(), move2.hashCode()));
+        System.out.println(move1 == move2);
     }
 }

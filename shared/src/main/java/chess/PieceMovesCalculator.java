@@ -36,6 +36,7 @@ public class PieceMovesCalculator {
         List<ChessMove> returnList = new ArrayList<>();
 
         for(int i = 1; i <= range; i++){
+            // Check northwest diagonal
             returnList.addFirst(new ChessMove(
                     myPosition,
                     new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()+i),
@@ -44,9 +45,39 @@ public class PieceMovesCalculator {
             if(!returnList.getFirst().isValid()){
                 returnList.removeFirst();
             }
+
+            // Check northeast diagonal
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()+i),
+                    null
+            ));
+            if(!returnList.getFirst().isValid()){
+                returnList.removeFirst();
+            }
+
+            // Check southwest diagonal
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()-i),
+                    null
+            ));
+            if(!returnList.getFirst().isValid()){
+                returnList.removeFirst();
+            }
+
+            // Check southeast diagonal
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()-i),
+                    null
+            ));
+            if(!returnList.getFirst().isValid()){
+                returnList.removeFirst();
+            }
         }
 
-        return List.of();
+        return returnList;
     }
 
     public static Collection<ChessMove> findStraights(ChessBoard board, ChessPosition myPosition, int range){
