@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents a single chess piece
@@ -11,6 +12,7 @@ import java.util.Collection;
 public class ChessPiece {
 
     private PieceType type;
+    private ChessGame.TeamColor color;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.type = type;
@@ -32,7 +34,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return color;
     }
 
     /**
@@ -42,6 +44,11 @@ public class ChessPiece {
         return type;
     }
 
+    /**
+     * Gives a small way to represent pieces for the board toString
+     *
+     * @return a single-character representation of the piece type
+     */
     public String getCharRepresentation() {
         switch(type){
             case PAWN -> {
@@ -73,7 +80,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        return PieceMovesCalculator.pieceMoves(board, myPosition);
     }
 
     @Override
