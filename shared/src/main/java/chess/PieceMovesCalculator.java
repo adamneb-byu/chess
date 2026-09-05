@@ -110,25 +110,106 @@ public class PieceMovesCalculator {
     }
 
     public static Collection<ChessMove> findStraights(ChessBoard board, ChessPosition myPosition, int range){
-        return List.of();
+        List<ChessMove> returnList = new ArrayList<>();
+
+        boolean northBlocked = false;
+        boolean southBlocked = false;
+        boolean eastBlocked = false;
+        boolean westBlocked = false;
+
+        for(int i = 1; i <= range; i++){
+            // Check north line
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()),
+                    null
+            ));
+            if(!returnList.getFirst().isValid() || northBlocked){
+                returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                northBlocked = true;
+                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
+                    returnList.removeFirst();
+                }
+            }
+
+            // Check south diagonal
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()),
+                    null
+            ));
+            if(!returnList.getFirst().isValid() || southBlocked){
+                returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                southBlocked = true;
+                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
+                    returnList.removeFirst();
+                }
+            }
+
+            // Check east diagonal
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow(), myPosition.getColumn()+i),
+                    null
+            ));
+            if(!returnList.getFirst().isValid() || eastBlocked){
+                returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                eastBlocked = true;
+                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
+                    returnList.removeFirst();
+                }
+            }
+
+            // Check west diagonal
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow(), myPosition.getColumn()-i),
+                    null
+            ));
+            if(!returnList.getFirst().isValid() || westBlocked){
+                returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                westBlocked = true;
+                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
+                    returnList.removeFirst();
+                }
+            }
+        }
+
+        return returnList;
     }
 }
 
 class KingMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
-        return List.of();
+        ArrayList<ChessMove> diagonalMoves = (ArrayList<ChessMove>) findDiagonals(board, myPosition, 1);
+        ArrayList<ChessMove> straightMoves = (ArrayList<ChessMove>) findStraights(board, myPosition, 1);
+        diagonalMoves.removeAll(straightMoves);
+        diagonalMoves.addAll(straightMoves);
+        return diagonalMoves;
     }
 }
 
 class QueenMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
-        return List.of();
+        ArrayList<ChessMove> diagonalMoves = (ArrayList<ChessMove>) findDiagonals(board, myPosition, 8);
+        ArrayList<ChessMove> straightMoves = (ArrayList<ChessMove>) findStraights(board, myPosition, 8);
+        diagonalMoves.removeAll(straightMoves);
+        diagonalMoves.addAll(straightMoves);
+        return diagonalMoves;
     }
 }
 
 class RookMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
-        return List.of();
+        return findStraights(board, myPosition, 8);
     }
 }
 
