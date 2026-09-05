@@ -223,7 +223,24 @@ class BishopMovesCalculator extends PieceMovesCalculator{
 
 class KnightMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
-        return List.of();
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        int[][] possibilities = {
+                {2,1}, {1,2},
+                {-2, 1}, {1, -2},
+                {2, -1}, {-1, 2},
+                {-2, -1}, {-1, -2}
+        };
+        for(int[] set : possibilities){
+            moves.addFirst(new ChessMove(myPosition,
+                    new ChessPosition(myPosition.getRow() + set[0], myPosition.getColumn() + set[1]),
+                    null));
+            if(!moves.getFirst().isValid() || (board.getPiece(moves.getFirst().getEndPosition()) != null &&
+                    board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() == board.getPiece(myPosition).getTeamColor())){
+                moves.removeFirst();
+            }
+        }
+
+        return moves;
     }
 }
 
