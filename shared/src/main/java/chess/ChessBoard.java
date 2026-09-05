@@ -13,7 +13,7 @@ public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
-        resetBoard();
+
     }
 
     /**
@@ -74,7 +74,7 @@ public class ChessBoard {
         return visualBoard;
     }
 }
-
+/*
 class Main{
     public static void main(String[] args){
         ChessBoard testBoard = new ChessBoard();
@@ -92,4 +92,4 @@ class Main{
         System.out.println(String.format("%d =? %d", move1.hashCode(), move2.hashCode()));
         System.out.println(move1 == move2);
     }
-}
+}*/
