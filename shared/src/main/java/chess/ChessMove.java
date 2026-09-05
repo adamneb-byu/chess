@@ -43,6 +43,9 @@ public class ChessMove {
         return promotionPiece;
     }
 
+    public boolean isValid(){
+        return startPosition.isValid() && endPosition.isValid();
+    }
 
     @Override
     public boolean equals(Object obj) {

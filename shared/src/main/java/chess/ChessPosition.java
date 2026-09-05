@@ -32,6 +32,11 @@ public class ChessPosition {
         return col;
     }
 
+    public boolean isValid(){
+        return row > 0 && row < 9 &&
+                col > 0 && col < 9;
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode();

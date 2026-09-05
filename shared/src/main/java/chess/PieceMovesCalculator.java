@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +31,27 @@ public class PieceMovesCalculator {
             }
         }
     }
+
+    public static Collection<ChessMove> findDiagonals(ChessBoard board, ChessPosition myPosition, int range){
+        List<ChessMove> returnList = new ArrayList<>();
+
+        for(int i = 1; i <= range; i++){
+            returnList.addFirst(new ChessMove(
+                    myPosition,
+                    new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()+i),
+                    null
+            ));
+            if(!returnList.getFirst().isValid()){
+                returnList.removeFirst();
+            }
+        }
+
+        return List.of();
+    }
+
+    public static Collection<ChessMove> findStraights(ChessBoard board, ChessPosition myPosition, int range){
+        return List.of();
+    }
 }
 
 class KingMovesCalculator extends PieceMovesCalculator{
@@ -52,7 +74,7 @@ class RookMovesCalculator extends PieceMovesCalculator{
 
 class BishopMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
-        return List.of();
+        return findDiagonals(board, myPosition, 8);
     }
 }
 
