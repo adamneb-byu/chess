@@ -49,11 +49,11 @@ public class ChessMove {
         return startPosition.isValid() && endPosition.isValid();
     }
 
-    //@Override
-    public boolean equals(ChessMove move) {
-        return startPosition.equals(move.getStartPosition()) &&
-                endPosition.equals(move.getEndPosition()) &&
-                promotionPiece == move.getPromotionPiece();
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        return hashCode() == obj.hashCode();
     }
 
     @Override

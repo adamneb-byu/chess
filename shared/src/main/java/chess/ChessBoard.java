@@ -84,7 +84,8 @@ class Main{
         ChessPosition pos1 = new ChessPosition(3,3);
         ChessPosition pos2 = new ChessPosition(3,3);
         System.out.println(String.format("%d =? %d", pos1.hashCode(), pos2.hashCode()));
-        System.out.println(pos1== pos2);
+        boolean isEqual = pos1.equals(pos2);
+        System.out.println(isEqual);
 
         ChessMove move1 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
         ChessMove move2 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);

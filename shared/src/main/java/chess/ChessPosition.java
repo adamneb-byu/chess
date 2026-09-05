@@ -44,9 +44,11 @@ public class ChessPosition {
         return Objects.hash(row, col);
     }
 
-    //@Override
-    public boolean equals(ChessPosition pos) {
-        return row == pos.getRow() && col == pos.getColumn();
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        return hashCode() == obj.hashCode();
     }
 
     @Override
