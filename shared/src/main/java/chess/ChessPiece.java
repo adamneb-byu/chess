@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -51,27 +52,29 @@ public class ChessPiece {
      * @return a single-character representation of the piece type
      */
     public String getCharRepresentation() {
+        String returnMe = " ";
         switch(type){
             case PAWN -> {
-                return "p";
+                returnMe = "p";
             }
             case KNIGHT -> {
-                return "h";
+                returnMe = "h";
             }
             case ROOK -> {
-                return "r";
+                returnMe = "r";
             }
             case BISHOP -> {
-                return "b";
+                returnMe = "b";
             }
             case QUEEN -> {
-                return "q";
+                returnMe = "q";
             }
             case KING -> {
-                return "k";
+                returnMe = "k";
             }
         }
-        return " ";
+        if(color == ChessGame.TeamColor.WHITE) returnMe = returnMe.toUpperCase();
+        return returnMe;
     }
     /**
      * Calculates all the positions a chess piece can move to
@@ -86,11 +89,13 @@ public class ChessPiece {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(type, color);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        return hashCode() == obj.hashCode();
     }
 }

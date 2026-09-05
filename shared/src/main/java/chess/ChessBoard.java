@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -42,18 +43,47 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        //Arrays.fill(board, null);
-        addPiece(new ChessPosition(1,1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        board = new ChessPiece[8][8];
+        addPiece(new ChessPosition(1,1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(1,2), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(1,3), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(1,4), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(1,5), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
+        addPiece(new ChessPosition(1,6), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(1,7), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(1,8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        for(int i = 1; i <= 8; i++){
+            addPiece(new ChessPosition(2,i), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN));
+        }
+        addPiece(new ChessPosition(8,1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        addPiece(new ChessPosition(8,2), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(8,3), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(8,4), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN));
+        addPiece(new ChessPosition(8,5), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING));
+        addPiece(new ChessPosition(8,6), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
+        addPiece(new ChessPosition(8,7), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT));
+        addPiece(new ChessPosition(8,8), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
+        for(int i = 1; i <= 8; i++){
+            addPiece(new ChessPosition(7,i), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN));
+        }
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        int hash = 0;
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                hash += Objects.hash(board[i][j]);
+            }
+        }
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if(this == obj) return true;
+        if(obj == null || getClass() != obj.getClass()) return false;
+        return hashCode() == obj.hashCode();
     }
 
     @Override
@@ -74,22 +104,20 @@ public class ChessBoard {
         return visualBoard;
     }
 }
-/*
+
 class Main{
     public static void main(String[] args){
         ChessBoard testBoard = new ChessBoard();
-        testBoard.addPiece(new ChessPosition(4,4),new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP));
-        System.out.println(testBoard);
+        testBoard.resetBoard();
+        System.out.println(testBoard.hashCode());
 
-        ChessPosition pos1 = new ChessPosition(3,3);
-        ChessPosition pos2 = new ChessPosition(3,3);
-        System.out.println(String.format("%d =? %d", pos1.hashCode(), pos2.hashCode()));
-        boolean isEqual = pos1.equals(pos2);
-        System.out.println(isEqual);
+        ChessBoard board2 = new ChessBoard();
+        board2.resetBoard();
+        System.out.println(board2.hashCode());
 
         ChessMove move1 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
         ChessMove move2 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
         System.out.println(String.format("%d =? %d", move1.hashCode(), move2.hashCode()));
-        System.out.println(move1 == move2);
+        System.out.println(testBoard.equals(board2));
     }
-}*/
+}
