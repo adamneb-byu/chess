@@ -73,7 +73,12 @@ public class ChessBoard {
         int hash = 0;
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                hash += Objects.hash(board[i][j]);
+                if(board[i][j] != null){
+                    hash += Objects.hash(board[i][j],i,j);
+                    if(board[i][j].getTeamColor() == ChessGame.TeamColor.WHITE){
+                        hash *= 2;
+                    }
+                }
             }
         }
         return hash;
@@ -108,11 +113,11 @@ public class ChessBoard {
 class Main{
     public static void main(String[] args){
         ChessBoard testBoard = new ChessBoard();
-        testBoard.resetBoard();
+        testBoard.addPiece(new ChessPosition(4,1),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
         System.out.println(testBoard.hashCode());
 
         ChessBoard board2 = new ChessBoard();
-        board2.resetBoard();
+        board2.addPiece(new ChessPosition(2,1),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
         System.out.println(board2.hashCode());
 
         ChessMove move1 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
