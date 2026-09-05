@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Arrays;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -21,7 +23,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        board[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
 
     /**
@@ -32,7 +34,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return board[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -40,7 +42,8 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        //Arrays.fill(board, null);
+        addPiece(new ChessPosition(1,1), new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK));
     }
 
     @Override
@@ -51,5 +54,30 @@ public class ChessBoard {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        String visualBoard = "";
+
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j <= 8; j++) {
+                if (getPiece(new ChessPosition(i, j)) != null) {
+                    visualBoard += String.format("|%s", getPiece(new ChessPosition(i, j)).getCharRepresentation());
+                }else {
+                    visualBoard += "| ";
+                }
+            }
+            visualBoard += "|\n";
+        }
+
+        return visualBoard;
+    }
+}
+
+class Main{
+    public static void main(String[] args){
+        ChessBoard testBoard = new ChessBoard();
+        System.out.println(testBoard);
     }
 }

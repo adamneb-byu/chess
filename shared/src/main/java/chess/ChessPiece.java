@@ -10,7 +10,10 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
+    private PieceType type;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.type = type;
     }
 
     /**
@@ -36,9 +39,32 @@ public class ChessPiece {
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
+    public String getCharRepresentation() {
+        switch(type){
+            case PAWN -> {
+                return "p";
+            }
+            case KNIGHT -> {
+                return "h";
+            }
+            case ROOK -> {
+                return "r";
+            }
+            case BISHOP -> {
+                return "b";
+            }
+            case QUEEN -> {
+                return "q";
+            }
+            case KING -> {
+                return "k";
+            }
+        }
+        return " ";
+    }
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
