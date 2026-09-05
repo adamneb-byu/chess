@@ -35,6 +35,11 @@ public class PieceMovesCalculator {
     public static Collection<ChessMove> findDiagonals(ChessBoard board, ChessPosition myPosition, int range){
         List<ChessMove> returnList = new ArrayList<>();
 
+        boolean northwestBlocked = false;
+        boolean southwestBlocked = false;
+        boolean northeastBlocked = false;
+        boolean southeastBlocked = false;
+
         for(int i = 1; i <= range; i++){
             // Check northwest diagonal
             returnList.addFirst(new ChessMove(
@@ -42,8 +47,16 @@ public class PieceMovesCalculator {
                     new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()+i),
                     null
             ));
-            if(!returnList.getFirst().isValid()){
+            if(returnList.getFirst().isValid() &&
+                    board.getPiece(returnList.getFirst().getEndPosition()) != null &&
+                    (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+            board.getPiece(myPosition).getTeamColor())) {
+                northwestBlocked = true;
+            }
+            if(!returnList.getFirst().isValid() || northwestBlocked){
                 returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                northwestBlocked = true;
             }
 
             // Check northeast diagonal
@@ -52,8 +65,16 @@ public class PieceMovesCalculator {
                     new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()+i),
                     null
             ));
-            if(!returnList.getFirst().isValid()){
+            if(returnList.getFirst().isValid() &&
+                    board.getPiece(returnList.getFirst().getEndPosition()) != null &&
+                    (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                    board.getPiece(myPosition).getTeamColor())) {
+                northeastBlocked = true;
+            }
+            if(!returnList.getFirst().isValid() || northeastBlocked){
                 returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                northeastBlocked = true;
             }
 
             // Check southwest diagonal
@@ -62,8 +83,16 @@ public class PieceMovesCalculator {
                     new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()-i),
                     null
             ));
-            if(!returnList.getFirst().isValid()){
+            if(returnList.getFirst().isValid() &&
+                    board.getPiece(returnList.getFirst().getEndPosition()) != null &&
+                    (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                    board.getPiece(myPosition).getTeamColor())) {
+                southwestBlocked = true;
+            }
+            if(!returnList.getFirst().isValid() || southwestBlocked){
                 returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                southwestBlocked = true;
             }
 
             // Check southeast diagonal
@@ -72,8 +101,16 @@ public class PieceMovesCalculator {
                     new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()-i),
                     null
             ));
-            if(!returnList.getFirst().isValid()){
+            if(returnList.getFirst().isValid() &&
+                    board.getPiece(returnList.getFirst().getEndPosition()) != null &&
+                    (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
+                    board.getPiece(myPosition).getTeamColor())) {
+                southeastBlocked = true;
+            }
+            if(!returnList.getFirst().isValid() || southeastBlocked){
                 returnList.removeFirst();
+            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
+                southeastBlocked = true;
             }
         }
 
