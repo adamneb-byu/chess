@@ -247,7 +247,6 @@ class KnightMovesCalculator extends PieceMovesCalculator{
 class PawnMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> moves = new ArrayList<>();
-        ChessPiece.PieceType[] promoteTypes = {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT};
         int direction = 1;
         int firstRow = 2;
         int lastRow = 8;
@@ -264,11 +263,7 @@ class PawnMovesCalculator extends PieceMovesCalculator{
         }
         // Promote option
         else if(moves.getFirst().getEndPosition().getRow() == lastRow) {
-            moves.getFirst().setPromotionPiece(ChessPiece.PieceType.QUEEN);
-            for(ChessPiece.PieceType type : promoteTypes){
-                moves.addFirst(new ChessMove(myPosition,
-                        moves.getFirst().getEndPosition(),type));
-            }
+            moves = computePromotion(moves, myPosition);
         }
         // Double step if in first row
         if(myPosition.getRow() == firstRow){
@@ -288,11 +283,7 @@ class PawnMovesCalculator extends PieceMovesCalculator{
         }
         // Promote option
         else if(moves.getFirst().getEndPosition().getRow() == lastRow) {
-            moves.getFirst().setPromotionPiece(ChessPiece.PieceType.QUEEN);
-            for(ChessPiece.PieceType type : promoteTypes){
-                moves.addFirst(new ChessMove(myPosition,
-                        moves.getFirst().getEndPosition(),type));
-            }
+            moves = computePromotion(moves, myPosition);
         }
         // Check for captures on left side
         moves.addFirst(new ChessMove(myPosition,
@@ -303,13 +294,19 @@ class PawnMovesCalculator extends PieceMovesCalculator{
         }
         // Promote option
         else if(moves.getFirst().getEndPosition().getRow() == lastRow) {
-            moves.getFirst().setPromotionPiece(ChessPiece.PieceType.QUEEN);
-            for(ChessPiece.PieceType type : promoteTypes){
-                moves.addFirst(new ChessMove(myPosition,
-                        moves.getFirst().getEndPosition(),type));
-            }
+            moves = computePromotion(moves, myPosition);
         }
 
+        return moves;
+    }
+
+    private static ArrayList<ChessMove> computePromotion(ArrayList<ChessMove> moves, ChessPosition myPosition){
+        ChessPiece.PieceType[] promoteTypes = {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT};
+        moves.getFirst().setPromotionPiece(ChessPiece.PieceType.QUEEN);
+        for(ChessPiece.PieceType type : promoteTypes){
+            moves.addFirst(new ChessMove(myPosition,
+                    moves.getFirst().getEndPosition(),type));
+        }
         return moves;
     }
 }

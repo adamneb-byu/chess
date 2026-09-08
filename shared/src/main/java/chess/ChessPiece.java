@@ -73,7 +73,9 @@ public class ChessPiece {
                 returnMe = "k";
             }
         }
-        if(color == ChessGame.TeamColor.WHITE) returnMe = returnMe.toUpperCase();
+        if(color == ChessGame.TeamColor.WHITE) {
+            returnMe = returnMe.toUpperCase();
+        }
         return returnMe;
     }
     /**
@@ -94,8 +96,12 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null || getClass() != obj.getClass()) return false;
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         return hashCode() == obj.hashCode();
     }
 }
