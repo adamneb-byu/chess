@@ -200,9 +200,7 @@ class KingMovesCalculator extends PieceMovesCalculator{
 class QueenMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> diagonalMoves = (ArrayList<ChessMove>) findDiagonals(board, myPosition, 8);
-        System.out.println(diagonalMoves);
         ArrayList<ChessMove> straightMoves = (ArrayList<ChessMove>) findStraights(board, myPosition, 8);
-        System.out.println(straightMoves);
         diagonalMoves.removeAll(straightMoves);
         diagonalMoves.addAll(straightMoves);
         return diagonalMoves;

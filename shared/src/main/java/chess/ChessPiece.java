@@ -24,12 +24,18 @@ public class ChessPiece {
      * The various different chess piece options
      */
     public enum PieceType {
-        KING,
-        QUEEN,
-        BISHOP,
-        KNIGHT,
-        ROOK,
-        PAWN
+        KING('k'),
+        QUEEN('q'),
+        BISHOP('b'),
+        KNIGHT('n'),
+        ROOK('r'),
+        PAWN('p');
+
+        public final char charRepresentation;
+
+        PieceType(char charRepresentation) {
+            this.charRepresentation = charRepresentation;
+        }
     }
 
     /**
@@ -52,8 +58,8 @@ public class ChessPiece {
      * @return a single-character representation of the piece type
      */
     public String getCharRepresentation() {
-        String returnMe = " ";
-        switch(type){
+        String returnMe = "" + type.charRepresentation;
+        /*switch(type){
             case PAWN -> {
                 returnMe = "p";
             }
@@ -72,7 +78,7 @@ public class ChessPiece {
             case KING -> {
                 returnMe = "k";
             }
-        }
+        }*/
         if(color == ChessGame.TeamColor.WHITE) {
             returnMe = returnMe.toUpperCase();
         }

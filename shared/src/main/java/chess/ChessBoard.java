@@ -126,7 +126,7 @@ class Main{
 
         ChessMove move1 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
         ChessMove move2 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
-        System.out.println(String.format("%d =? %d", move1.hashCode(), move2.hashCode()));
+        System.out.printf("%d =? %d%n", move1.hashCode(), move2.hashCode());
         System.out.println(testBoard.equals(board2));
     }
 }
