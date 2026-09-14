@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -10,15 +11,19 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private TeamColor teamTurn;
+    private ChessBoard board = new ChessBoard();
 
+    public ChessGame() {
+        teamTurn = TeamColor.WHITE;
+        board.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return teamTurn;
     }
 
     /**
@@ -27,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        teamTurn = team;
     }
 
     /**
@@ -46,7 +51,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        return PieceMovesCalculator.pieceMoves(board,startPosition);
     }
 
     /**
@@ -66,7 +71,9 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) getTeamMoves(getOtherTeam(teamColor));
+        // todo determine which moves are attacks
+        return false;
     }
 
     /**
@@ -96,7 +103,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +112,28 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
+    }
+
+    public TeamColor getOtherTeam(TeamColor color){
+        if(color == TeamColor.WHITE){
+            return TeamColor.BLACK;
+        }else{
+            return TeamColor.WHITE;
+        }
+    }
+
+    public Collection<ChessMove> getTeamMoves(TeamColor color){
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j <= 8; j++) {
+                ChessPosition pos = new ChessPosition(i,j);
+                if(board.getPiece(pos) != null &&
+                board.getPiece(pos).getTeamColor() == color){
+                    moves.addAll(validMoves(pos));
+                }
+            }
+        }
+        return moves;
     }
 }
