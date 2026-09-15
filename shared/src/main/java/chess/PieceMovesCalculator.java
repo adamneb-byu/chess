@@ -33,157 +33,41 @@ public class PieceMovesCalculator {
     }
 
     public static Collection<ChessMove> findDiagonals(ChessBoard board, ChessPosition myPosition, int range){
-        List<ChessMove> returnList = new ArrayList<>();
-
-        boolean northwestBlocked = false;
-        boolean southwestBlocked = false;
-        boolean northeastBlocked = false;
-        boolean southeastBlocked = false;
-
-        for(int i = 1; i <= range; i++){
-            // Check northwest diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()+i),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || northwestBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                northwestBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-
-            // Check northeast diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()+i),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || northeastBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                northeastBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-
-            // Check southwest diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()-i),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || southwestBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                southwestBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-
-            // Check southeast diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()-i),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || southeastBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                southeastBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-        }
-
-        return returnList;
+        int[][] options = {
+                {1,1},{-1,1},{1,-1},{-1,-1}
+        };
+        return processOptions(board,myPosition,range,options);
     }
 
     public static Collection<ChessMove> findStraights(ChessBoard board, ChessPosition myPosition, int range){
-        List<ChessMove> returnList = new ArrayList<>();
+        int[][] options = {
+                {1,0},{-1,0},{0,1},{0,-1}
+        };
+        return processOptions(board,myPosition,range,options);
+    }
 
-        boolean northBlocked = false;
-        boolean southBlocked = false;
-        boolean eastBlocked = false;
-        boolean westBlocked = false;
-
+    private static Collection<ChessMove> processOptions(ChessBoard board, ChessPosition myPosition, int range, int[][] options){
+        boolean[] blocked = {false,false,false,false};
+        ArrayList<ChessMove> moves = new ArrayList<>();
         for(int i = 1; i <= range; i++){
-            // Check north line
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow()+i, myPosition.getColumn()),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || northBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                northBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-
-            // Check south diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow()-i, myPosition.getColumn()),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || southBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                southBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-
-            // Check east diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow(), myPosition.getColumn()+i),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || eastBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                eastBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
-                }
-            }
-
-            // Check west diagonal
-            returnList.addFirst(new ChessMove(
-                    myPosition,
-                    new ChessPosition(myPosition.getRow(), myPosition.getColumn()-i),
-                    null
-            ));
-            if(!returnList.getFirst().isValid() || westBlocked){
-                returnList.removeFirst();
-            }else if(board.getPiece(returnList.getFirst().getEndPosition()) != null){
-                westBlocked = true;
-                if (board.getPiece(returnList.getFirst().getEndPosition()).getTeamColor() ==
-                        board.getPiece(returnList.getFirst().getStartPosition()).getTeamColor()){
-                    returnList.removeFirst();
+            for(int j = 0; j < 4; j++){
+                moves.addFirst(new ChessMove(myPosition,
+                        new ChessPosition(myPosition.getRow()+(i*options[j][0]),
+                                myPosition.getColumn()+(i*options[j][1])),
+                        null
+                ));
+                if(blocked[j] || !moves.getFirst().getEndPosition().isValid()){
+                    moves.removeFirst();
+                }else if(board.getPiece(moves.getFirst().getEndPosition()) != null){
+                    blocked[j] = true;
+                    if(board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() ==
+                            board.getPiece(myPosition).getTeamColor()){
+                        moves.removeFirst();
+                    }
                 }
             }
         }
-
-        return returnList;
+        return moves;
     }
 }
 
@@ -300,16 +184,6 @@ class PawnMovesCalculator extends PieceMovesCalculator{
                             moves.getFirst().getEndPosition(),type));
                 }
             }
-        }
-        return moves;
-    }
-
-    private static ArrayList<ChessMove> computePromotion(ArrayList<ChessMove> moves, ChessPosition myPosition){
-        ChessPiece.PieceType[] promoteTypes = {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT};
-        moves.getFirst().setPromotionPiece(ChessPiece.PieceType.QUEEN);
-        for(ChessPiece.PieceType type : promoteTypes){
-            moves.addFirst(new ChessMove(myPosition,
-                    moves.getFirst().getEndPosition(),type));
         }
         return moves;
     }

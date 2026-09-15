@@ -110,20 +110,20 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        String visualBoard = "";
+        StringBuilder visualBoard = new StringBuilder();
 
         for(int i = 1; i <= 8; i++){
             for(int j = 1; j <= 8; j++) {
                 if (getPiece(new ChessPosition(i, j)) != null) {
-                    visualBoard += String.format("|%s", getPiece(new ChessPosition(i, j)).getCharRepresentation());
+                    visualBoard.append(String.format("|%s", getPiece(new ChessPosition(i, j)).getCharRepresentation()));
                 }else {
-                    visualBoard += "| ";
+                    visualBoard.append("| ");
                 }
             }
-            visualBoard += "|\n";
+            visualBoard.append("|\n");
         }
 
-        return visualBoard;
+        return visualBoard.toString();
     }
 }
 
@@ -132,9 +132,8 @@ class Main{
         ChessBoard testBoard = new ChessBoard();
         testBoard.addPiece(new ChessPosition(4,1),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
         testBoard.addPiece(new ChessPosition(4,6),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
-        System.out.println(testBoard);
+
         ChessGame game = new ChessGame();
         game.setBoard(testBoard);
-        System.out.println(game.isInCheck(ChessGame.TeamColor.WHITE));
     }
 }
