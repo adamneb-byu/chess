@@ -245,56 +245,50 @@ class KnightMovesCalculator extends PieceMovesCalculator{
 class PawnMovesCalculator extends PieceMovesCalculator{
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> moves = new ArrayList<>();
-        int direction = 1;
-        int firstRow = 2;
-        int lastRow = 8;
+        int colorMod = 1;
         if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
-            direction = -1;
-            firstRow = 7;
-            lastRow = 1;
+            colorMod = -1;
         }
-        // Basic step forward
-        moves.addFirst(new ChessMove(myPosition,
-                new ChessPosition(myPosition.getRow()+direction, myPosition.getColumn()),null));
-        if(!moves.getFirst().isValid() || board.getPiece(moves.getFirst().getEndPosition()) != null){
-            moves.removeFirst();
-        }
-        // Promote option
-        else if(moves.getFirst().getEndPosition().getRow() == lastRow) {
-            moves = computePromotion(moves, myPosition);
-        }
-        // Double step if in first row
-        if(myPosition.getRow() == firstRow){
+        int[][] options = {
+                {colorMod,0,0},{colorMod,-1,1},{colorMod,1,1},{colorMod*2,0,0}
+        };
+        for(int[] option : options){
             moves.addFirst(new ChessMove(myPosition,
-                    new ChessPosition(myPosition.getRow()+(direction*2), myPosition.getColumn()),null));
-            if(!moves.getFirst().isValid() || board.getPiece(moves.getFirst().getEndPosition()) != null ||
-                    board.getPiece(new ChessPosition(myPosition.getRow()+direction, myPosition.getColumn())) != null){
+                    new ChessPosition(myPosition.getRow() + option[0],
+                            myPosition.getColumn() + option[1]), null));
+            if (!moves.getFirst().getEndPosition().isValid()) {
                 moves.removeFirst();
+            } else if (board.getPiece(moves.getFirst().getEndPosition()) != null){
+                if(board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() ==
+                        board.getPiece(myPosition).getTeamColor()) {
+                    moves.removeFirst();
+                }else if(option[2] == 0){
+                    moves.removeFirst();
+                }
+            }else if(option[2] == 1){
+                moves.removeFirst();
+            }else if(option[0] == colorMod*2){
+                if(board.getPiece(new ChessPosition(
+                        myPosition.getRow() + colorMod, myPosition.getColumn()
+                )) != null || (myPosition.getRow() != 2 && myPosition.getRow() != 7)){
+                    moves.removeFirst();
+                }
+            }
+            if(!moves.isEmpty() && moves.getFirst().getPromotionPiece() == null &&
+                    (moves.getFirst().getEndPosition().getRow() == 1 ||
+                            moves.getFirst().getEndPosition().getRow() == 8)){
+                ChessPiece.PieceType[] promotes = {
+                        ChessPiece.PieceType.ROOK,
+                        ChessPiece.PieceType.KNIGHT,
+                        ChessPiece.PieceType.BISHOP
+                };
+                moves.getFirst().setPromotionPiece(ChessPiece.PieceType.QUEEN);
+                for(ChessPiece.PieceType type : promotes){
+                    moves.addFirst(new ChessMove(myPosition,
+                            moves.getFirst().getEndPosition(),type));
+                }
             }
         }
-        // Check for captures on right side
-        moves.addFirst(new ChessMove(myPosition,
-                new ChessPosition(myPosition.getRow()+direction, myPosition.getColumn()+1),null));
-        if(!moves.getFirst().isValid() || board.getPiece(moves.getFirst().getEndPosition()) == null ||
-                board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-            moves.removeFirst();
-        }
-        // Promote option
-        else if(moves.getFirst().getEndPosition().getRow() == lastRow) {
-            moves = computePromotion(moves, myPosition);
-        }
-        // Check for captures on left side
-        moves.addFirst(new ChessMove(myPosition,
-                new ChessPosition(myPosition.getRow()+direction, myPosition.getColumn()-1),null));
-        if(!moves.getFirst().isValid() || board.getPiece(moves.getFirst().getEndPosition()) == null ||
-                board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() == board.getPiece(myPosition).getTeamColor()){
-            moves.removeFirst();
-        }
-        // Promote option
-        else if(moves.getFirst().getEndPosition().getRow() == lastRow) {
-            moves = computePromotion(moves, myPosition);
-        }
-
         return moves;
     }
 
