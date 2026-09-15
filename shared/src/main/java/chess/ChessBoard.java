@@ -118,15 +118,10 @@ class Main{
     public static void main(String[] args){
         ChessBoard testBoard = new ChessBoard();
         testBoard.addPiece(new ChessPosition(4,1),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
-        System.out.println(testBoard.hashCode());
-
-        ChessBoard board2 = new ChessBoard();
-        board2.addPiece(new ChessPosition(2,1),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING));
-        System.out.println(board2.hashCode());
-
-        ChessMove move1 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
-        ChessMove move2 = new ChessMove(new ChessPosition(1,1), new ChessPosition(2,2),null);
-        System.out.printf("%d =? %d%n", move1.hashCode(), move2.hashCode());
-        System.out.println(testBoard.equals(board2));
+        testBoard.addPiece(new ChessPosition(4,6),new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
+        System.out.println(testBoard);
+        ChessGame game = new ChessGame();
+        game.setBoard(testBoard);
+        System.out.println(game.isInCheck(ChessGame.TeamColor.WHITE));
     }
 }

@@ -24,7 +24,7 @@ public class PieceMovesCalculator {
                 return KnightMovesCalculator.pieceMoves(board, myPosition);
             }
             case PAWN -> {
-                return PawnMovesCalculator.pieceMoves(board, myPosition);
+                return PawnMovesCalculator.pieceMoves(board, myPosition, false);
             }
             case null, default -> {
                 return List.of();
@@ -243,37 +243,49 @@ class KnightMovesCalculator extends PieceMovesCalculator{
 }
 
 class PawnMovesCalculator extends PieceMovesCalculator{
-    public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
+    public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition, boolean attacksOnly){
         ArrayList<ChessMove> moves = new ArrayList<>();
+        // Set possible movement patterns based on team color
         int colorMod = 1;
         if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
             colorMod = -1;
         }
+        // {row, col, isAttack}
         int[][] options = {
                 {colorMod,0,0},{colorMod,-1,1},{colorMod,1,1},{colorMod*2,0,0}
         };
         for(int[] option : options){
+            // Add proposed move to list
             moves.addFirst(new ChessMove(myPosition,
                     new ChessPosition(myPosition.getRow() + option[0],
                             myPosition.getColumn() + option[1]), null));
-            if (!moves.getFirst().getEndPosition().isValid()) {
+            if (attacksOnly && option[2] == 0){
+                // Remove non-attack moves if only counting attacks
+                moves.removeFirst();
+            }else if (!moves.getFirst().getEndPosition().isValid()) {
+                // Remove if move is invalid
                 moves.removeFirst();
             } else if (board.getPiece(moves.getFirst().getEndPosition()) != null){
+                // Logic for if trying to move onto a piece
                 if(board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() ==
                         board.getPiece(myPosition).getTeamColor()) {
                     moves.removeFirst();
                 }else if(option[2] == 0){
+                    // Remove if trying to move straight forward onto an enemy piece
                     moves.removeFirst();
                 }
             }else if(option[2] == 1){
+                // Remove if proposed move is an attack but there is no piece to attack
                 moves.removeFirst();
             }else if(option[0] == colorMod*2){
+                // Only allow moving forward two spaces if on starting row
                 if(board.getPiece(new ChessPosition(
                         myPosition.getRow() + colorMod, myPosition.getColumn()
                 )) != null || (myPosition.getRow() != 2 && myPosition.getRow() != 7)){
                     moves.removeFirst();
                 }
             }
+            // Promotion logic
             if(!moves.isEmpty() && moves.getFirst().getPromotionPiece() == null &&
                     (moves.getFirst().getEndPosition().getRow() == 1 ||
                             moves.getFirst().getEndPosition().getRow() == 8)){
