@@ -161,19 +161,26 @@ public class ChessGame {
             for(int j = 1; j <= 8; j++){
                 ChessPosition curPos = new ChessPosition(i,j);
                 if(board.getPiece(curPos) != null &&
-                board.getPiece(curPos).getTeamColor() == teamColor){
-                    ArrayList<ChessMove> moves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,curPos);
-                    for(ChessMove move : moves){
-                        ChessBoard simBoard = simulateMove(move);
-                        ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(getOtherTeam(teamColor),true,simBoard);
-                        if(!AttackManager.isUnderAttack(findKing(teamColor,simBoard),attacks)){
-                            checkmate = false;
-                        }
-                    }
+                board.getPiece(curPos).getTeamColor() == teamColor &&
+                !simulateAttacks(teamColor,curPos)){
+                    checkmate = false;
                 }
             }
         }
         return checkmate;
+    }
+
+    public boolean simulateAttacks(TeamColor teamColor, ChessPosition curPos){
+        boolean returnMe = true;
+        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,curPos);
+        for(ChessMove move : moves){
+            ChessBoard simBoard = simulateMove(move);
+            ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(getOtherTeam(teamColor),true,simBoard);
+            if(!AttackManager.isUnderAttack(findKing(teamColor,simBoard),attacks)){
+                returnMe = false;
+            }
+        }
+        return returnMe;
     }
 
     /**

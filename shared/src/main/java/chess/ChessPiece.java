@@ -59,26 +59,6 @@ public class ChessPiece {
      */
     public String getCharRepresentation() {
         String returnMe = "" + type.charRepresentation;
-        /*switch(type){
-            case PAWN -> {
-                returnMe = "p";
-            }
-            case KNIGHT -> {
-                returnMe = "h";
-            }
-            case ROOK -> {
-                returnMe = "r";
-            }
-            case BISHOP -> {
-                returnMe = "b";
-            }
-            case QUEEN -> {
-                returnMe = "q";
-            }
-            case KING -> {
-                returnMe = "k";
-            }
-        }*/
         if(color == ChessGame.TeamColor.WHITE) {
             returnMe = returnMe.toUpperCase();
         }
