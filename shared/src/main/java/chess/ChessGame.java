@@ -52,7 +52,30 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return PieceMovesCalculator.pieceMoves(board,startPosition);
+        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,startPosition);
+        TeamColor myColor = board.getPiece(startPosition).getTeamColor();
+        ArrayList<ChessMove> badMoves = new ArrayList<>();
+
+        // If any of the moves puts the king in check, delete it from moves
+        for(ChessMove move : moves){
+            ChessBoard simBoard = simulateMove(move);
+            ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(getOtherTeam(myColor),true,simBoard);
+            if(AttackManager.isUnderAttack(findKing(myColor, simBoard),attacks)){
+                badMoves.add(move);
+            }
+        }
+        moves.removeAll(badMoves);
+        return moves;
+    }
+
+    public ChessBoard simulateMove(ChessMove move){
+        ChessBoard simBoard = board.makeCopy();
+
+        simBoard.addPiece(move.getEndPosition(),new ChessPiece(simBoard.getPiece(move.getStartPosition()).getTeamColor(),
+                simBoard.getPiece(move.getStartPosition()).getPieceType()));
+        simBoard.addPiece(move.getStartPosition(),null);
+
+        return simBoard;
     }
 
     /**
@@ -105,12 +128,12 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) getTeamMoves(getOtherTeam(teamColor), true);
-        ChessPosition kingPos = findKing(teamColor);
-        return isUnderAttack(kingPos, attacks);
+        ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(getOtherTeam(teamColor), true, board);
+        ChessPosition kingPos = findKing(teamColor, board);
+        return AttackManager.isUnderAttack(kingPos, attacks);
     }
 
-    public ChessPosition findKing(TeamColor teamColor){
+    public ChessPosition findKing(TeamColor teamColor, ChessBoard board){
         for(int i = 1; i <= 8; i++){
             for(int j = 1; j <= 8; j++) {
                 ChessPosition myPosition = new ChessPosition(i,j);
@@ -122,15 +145,6 @@ public class ChessGame {
             }
         }
         return null;
-    }
-
-    public boolean isUnderAttack(ChessPosition victimPosition, Collection<ChessMove> attacks){
-        for(ChessMove attack : attacks){
-            if(attack.getEndPosition().equals(victimPosition)){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -180,23 +194,7 @@ public class ChessGame {
         }
     }
 
-    public Collection<ChessMove> getTeamMoves(TeamColor color, boolean attacksOnly){
-        ArrayList<ChessMove> moves = new ArrayList<>();
-        for(int i = 1; i <= 8; i++){
-            for(int j = 1; j <= 8; j++) {
-                ChessPosition pos = new ChessPosition(i,j);
-                if(board.getPiece(pos) != null &&
-                board.getPiece(pos).getTeamColor() == color){
-                    if (attacksOnly && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.PAWN){
-                        moves.addAll(PawnMovesCalculator.pieceMoves(board,pos,true));
-                    }else {
-                        moves.addAll(validMoves(pos));
-                    }
-                }
-            }
-        }
-        return moves;
-    }
+
 
     @Override
     public boolean equals(Object o) {

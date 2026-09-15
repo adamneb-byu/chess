@@ -68,6 +68,19 @@ public class ChessBoard {
         }
     }
 
+    public ChessBoard makeCopy(){
+        ChessBoard copy = new ChessBoard();
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j <= 8; j++) {
+                ChessPosition curPos = new ChessPosition(i,j);
+                if(getPiece(curPos) != null){
+                    copy.addPiece(curPos,new ChessPiece(getPiece(curPos).getTeamColor(),getPiece(curPos).getPieceType()));
+                }
+            }
+        }
+        return copy;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
