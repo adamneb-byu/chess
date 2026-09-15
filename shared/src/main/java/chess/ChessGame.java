@@ -154,7 +154,25 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        boolean checkmate = true;
+        // Simulate every single possible move, set to false if king is safe
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j <= 8; j++){
+                ChessPosition curPos = new ChessPosition(i,j);
+                if(board.getPiece(curPos) != null &&
+                board.getPiece(curPos).getTeamColor() == teamColor){
+                    ArrayList<ChessMove> moves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,curPos);
+                    for(ChessMove move : moves){
+                        ChessBoard simBoard = simulateMove(move);
+                        ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(getOtherTeam(teamColor),true,simBoard);
+                        if(!AttackManager.isUnderAttack(findKing(teamColor,simBoard),attacks)){
+                            checkmate = false;
+                        }
+                    }
+                }
+            }
+        }
+        return checkmate;
     }
 
     /**
