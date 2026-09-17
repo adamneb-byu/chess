@@ -122,7 +122,8 @@ class KingMovesCalculator extends PieceMovesCalculator{
                         result[0] = false;
                     }
                     // Castling cannot take king through or to check
-                    if (col != 2 && AttackManager.isUnderAttack(checkPos, AttackManager.getTeamMoves(ChessGame.getOtherTeam(leftRook.getTeamColor()), true, board))) {
+                    ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(ChessGame.getOtherTeam(leftRook.getTeamColor()), true, board);
+                    if (col != 2 && AttackManager.isUnderAttack(checkPos, attacks)) {
                         result[0] = false;
                     }
                 }
@@ -144,7 +145,8 @@ class KingMovesCalculator extends PieceMovesCalculator{
                         result[1] = false;
                     }
                     // Castling cannot take king through or to check
-                    if (AttackManager.isUnderAttack(checkPos, AttackManager.getTeamMoves(ChessGame.getOtherTeam(rightRook.getTeamColor()), true, board))) {
+                    ArrayList<ChessMove> attacks = (ArrayList<ChessMove>) AttackManager.getTeamMoves(ChessGame.getOtherTeam(rightRook.getTeamColor()), true, board);
+                    if (AttackManager.isUnderAttack(checkPos, attacks)) {
                         result[1] = false;
                     }
                 }
