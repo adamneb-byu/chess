@@ -100,11 +100,6 @@ public class ChessGame {
             ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(),piece);
 
-            //System.out.println(move.getSpecialMove());
-
-            //if(move.getSpecialMove() == ChessMove.SpecialMove.EN_PASSANT){
-
-
             if(isInCheck(teamTurn)){
                 board.addPiece(move.getStartPosition(),originalPiece);
                 board.addPiece(move.getEndPosition(),capturedPiece);
@@ -112,7 +107,6 @@ public class ChessGame {
             }
             if(enPassant){
                 ChessPosition target = new ChessPosition(move.getStartPosition().getRow(),move.getEndPosition().getColumn());
-                ChessPiece newPiece = new ChessPiece(getOtherTeam(piece.getTeamColor()), ChessPiece.PieceType.QUEEN);
                 board.addPiece(target, null);
             }
             if(teamTurn == TeamColor.BLACK){
@@ -120,6 +114,7 @@ public class ChessGame {
             }else{
                 teamTurn = TeamColor.BLACK;
             }
+            board.resetLastMoves(teamTurn);
         }else{
             throw new InvalidMoveException();
         }

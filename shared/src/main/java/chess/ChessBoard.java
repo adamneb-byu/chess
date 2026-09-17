@@ -81,6 +81,16 @@ public class ChessBoard {
         return copy;
     }
 
+    public void resetLastMoves(ChessGame.TeamColor color){
+        for(ChessPiece[] row : board){
+            for(ChessPiece piece : row){
+                if(piece != null && piece.getTeamColor() == color){
+                    piece.setLastMove(null);
+                }
+            }
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

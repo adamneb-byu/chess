@@ -190,7 +190,6 @@ class PawnMovesCalculator extends PieceMovesCalculator{
                 }
             }
         }
-        System.out.println(moves);
         return moves;
     }
 

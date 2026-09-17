@@ -14,7 +14,7 @@ public class ChessPiece {
 
     private final PieceType type;
     private final ChessGame.TeamColor color;
-    private final ChessMove lastMove;
+    private ChessMove lastMove;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
@@ -30,6 +30,10 @@ public class ChessPiece {
 
     public ChessMove getLastMove() {
         return lastMove;
+    }
+
+    public void setLastMove(ChessMove lastMove){
+        this.lastMove = lastMove;
     }
 
     /**
