@@ -12,12 +12,24 @@ import java.util.Objects;
  */
 public class ChessPiece {
 
-    private PieceType type;
-    private ChessGame.TeamColor color;
+    private final PieceType type;
+    private final ChessGame.TeamColor color;
+    private final ChessMove lastMove;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
+        lastMove = null;
+    }
+
+    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type, ChessMove lastMove) {
+        this.color = pieceColor;
+        this.type = type;
+        this.lastMove = lastMove;
+    }
+
+    public ChessMove getLastMove() {
+        return lastMove;
     }
 
     /**

@@ -13,12 +13,28 @@ public class ChessMove {
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;
     private ChessPiece.PieceType promotionPiece;
+    private SpecialMove specialMove;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = promotionPiece;
+        specialMove = SpecialMove.NONE;
+    }
+
+    public SpecialMove getSpecialMove() {
+        return specialMove;
+    }
+
+    public void setSpecialMove(SpecialMove specialMove) {
+        this.specialMove = specialMove;
+    }
+
+    public enum SpecialMove{
+        EN_PASSANT,
+        CASTLE,
+        NONE
     }
 
     /**
@@ -71,6 +87,6 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return String.format("%s%s", startPosition, endPosition);
+        return String.format("%s%s,%s", startPosition, endPosition, specialMove);
     }
 }

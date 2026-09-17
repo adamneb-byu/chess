@@ -90,18 +90,30 @@ public class ChessGame {
                 board.getPiece(move.getStartPosition()).getTeamColor() == teamTurn &&
                 isPossibleMove(move, PieceMovesCalculator.pieceMoves(board,move.getStartPosition()))){
             ChessPiece originalPiece = board.getPiece(move.getStartPosition());
-            ChessPiece piece = new ChessPiece(originalPiece.getTeamColor(),originalPiece.getPieceType());
+            ChessPiece piece = new ChessPiece(originalPiece.getTeamColor(),originalPiece.getPieceType(),move);
             if(move.getPromotionPiece() != null){
-                piece = new ChessPiece(originalPiece.getTeamColor(),move.getPromotionPiece());
+                piece = new ChessPiece(originalPiece.getTeamColor(),move.getPromotionPiece(),move);
             }
+            boolean enPassant = PawnMovesCalculator.enPassant(board,move.getStartPosition(),move);
+
             board.addPiece(move.getStartPosition(),null);
             ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(),piece);
+
+            //System.out.println(move.getSpecialMove());
+
+            //if(move.getSpecialMove() == ChessMove.SpecialMove.EN_PASSANT){
+
 
             if(isInCheck(teamTurn)){
                 board.addPiece(move.getStartPosition(),originalPiece);
                 board.addPiece(move.getEndPosition(),capturedPiece);
                 throw new InvalidMoveException();
+            }
+            if(enPassant){
+                ChessPosition target = new ChessPosition(move.getStartPosition().getRow(),move.getEndPosition().getColumn());
+                ChessPiece newPiece = new ChessPiece(getOtherTeam(piece.getTeamColor()), ChessPiece.PieceType.QUEEN);
+                board.addPiece(target, null);
             }
             if(teamTurn == TeamColor.BLACK){
                 teamTurn = TeamColor.WHITE;

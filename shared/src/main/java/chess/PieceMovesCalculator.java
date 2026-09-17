@@ -153,12 +153,13 @@ class PawnMovesCalculator extends PieceMovesCalculator{
                 // Logic for if trying to move onto a piece
                 if(board.getPiece(moves.getFirst().getEndPosition()).getTeamColor() ==
                         board.getPiece(myPosition).getTeamColor()) {
+                    // Remove if trying to capture a friendly piece
                     moves.removeFirst();
                 }else if(option[2] == 0){
                     // Remove if trying to move straight forward onto an enemy piece
                     moves.removeFirst();
                 }
-            }else if(option[2] == 1){
+            }else if(option[2] == 1 && !enPassant(board, myPosition, moves.getFirst())){
                 // Remove if proposed move is an attack but there is no piece to attack
                 moves.removeFirst();
             }else if(option[0] == colorMod*2){
@@ -168,6 +169,10 @@ class PawnMovesCalculator extends PieceMovesCalculator{
                 )) != null || (myPosition.getRow() != 2 && myPosition.getRow() != 7)){
                     moves.removeFirst();
                 }
+            }
+            // Handle en passant
+            else if(enPassant(board, myPosition, moves.getFirst())){
+                moves.getFirst().setSpecialMove(ChessMove.SpecialMove.EN_PASSANT);
             }
             // Promotion logic
             if(!moves.isEmpty() && moves.getFirst().getPromotionPiece() == null &&
@@ -185,6 +190,19 @@ class PawnMovesCalculator extends PieceMovesCalculator{
                 }
             }
         }
+        System.out.println(moves);
         return moves;
+    }
+
+    public static boolean enPassant(ChessBoard board, ChessPosition myPosition, ChessMove move){
+        ChessPiece myPiece = board.getPiece(myPosition);
+        ChessPosition targetPos = new ChessPosition(move.getStartPosition().getRow(),move.getEndPosition().getColumn());
+        ChessPiece targetPiece = board.getPiece(targetPos);
+        if(targetPiece == null || targetPiece.getLastMove() == null){
+            return false;
+        }
+        return targetPiece.getTeamColor() != myPiece.getTeamColor() &&
+                targetPiece.getPieceType() == ChessPiece.PieceType.PAWN &&
+                Math.abs(targetPiece.getLastMove().getEndPosition().getRow() - targetPiece.getLastMove().getStartPosition().getRow()) == 2;
     }
 }
