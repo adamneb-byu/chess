@@ -94,7 +94,17 @@ public class ChessGame {
             if(move.getPromotionPiece() != null){
                 piece = new ChessPiece(originalPiece.getTeamColor(),move.getPromotionPiece(),move);
             }
+            piece.setHasMoved(true);
             boolean enPassant = PawnMovesCalculator.enPassant(board,move.getStartPosition(),move);
+            boolean[] castle = {false,false};
+            if(originalPiece.getPieceType() == ChessPiece.PieceType.KING &&
+                    move.getStartPosition().getColumn() == 5){
+                if(move.getEndPosition().getColumn() == 3){
+                    castle[0] = true;
+                }else if(move.getEndPosition().getColumn() == 7){
+                    castle[1] = true;
+                }
+            }
 
             board.addPiece(move.getStartPosition(),null);
             ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
@@ -108,6 +118,15 @@ public class ChessGame {
             if(enPassant){
                 ChessPosition target = new ChessPosition(move.getStartPosition().getRow(),move.getEndPosition().getColumn());
                 board.addPiece(target, null);
+            }
+            if(castle[0]){
+                ChessPiece movedRook = new ChessPiece(originalPiece.getTeamColor(), ChessPiece.PieceType.ROOK);
+                board.addPiece(new ChessPosition(move.getStartPosition().getRow(),1),null);
+                board.addPiece(new ChessPosition(move.getStartPosition().getRow(),4),movedRook);
+            }else if(castle[1]){
+                ChessPiece movedRook = new ChessPiece(originalPiece.getTeamColor(), ChessPiece.PieceType.ROOK);
+                board.addPiece(new ChessPosition(move.getStartPosition().getRow(),8),null);
+                board.addPiece(new ChessPosition(move.getStartPosition().getRow(),6),movedRook);
             }
             if(teamTurn == TeamColor.BLACK){
                 teamTurn = TeamColor.WHITE;
@@ -234,7 +253,7 @@ public class ChessGame {
         return board;
     }
 
-    public TeamColor getOtherTeam(TeamColor color){
+    public static TeamColor getOtherTeam(TeamColor color){
         if(color == TeamColor.WHITE){
             return TeamColor.BLACK;
         }else{

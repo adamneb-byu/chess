@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,11 +14,13 @@ public class ChessPiece {
     private final PieceType type;
     private final ChessGame.TeamColor color;
     private ChessMove lastMove;
+    private boolean hasMoved;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
         this.type = type;
         lastMove = null;
+        hasMoved = false;
     }
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type, ChessMove lastMove) {
@@ -34,6 +35,14 @@ public class ChessPiece {
 
     public void setLastMove(ChessMove lastMove){
         this.lastMove = lastMove;
+    }
+
+    public boolean getHasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
     /**

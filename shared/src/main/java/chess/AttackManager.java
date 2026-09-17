@@ -22,7 +22,9 @@ public class AttackManager {
                         board.getPiece(pos).getTeamColor() == color){
                     if (attacksOnly && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.PAWN){
                         moves.addAll(PawnMovesCalculator.pieceMoves(board,pos,true));
-                    }else {
+                    }else if (attacksOnly && board.getPiece(pos).getPieceType() == ChessPiece.PieceType.KING) {
+                        moves.addAll(KingMovesCalculator.pieceAttacks(board,pos));
+                    }else{
                         moves.addAll(PieceMovesCalculator.pieceMoves(board,pos));
                     }
                 }

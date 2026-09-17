@@ -77,7 +77,82 @@ class KingMovesCalculator extends PieceMovesCalculator{
         ArrayList<ChessMove> straightMoves = (ArrayList<ChessMove>) findStraights(board, myPosition, 1);
         diagonalMoves.removeAll(straightMoves);
         diagonalMoves.addAll(straightMoves);
+
+        if(!board.getPiece(myPosition).getHasMoved() &&
+        !AttackManager.isUnderAttack(myPosition,AttackManager.getTeamMoves(
+                ChessGame.getOtherTeam(board.getPiece(myPosition).getTeamColor()),
+                true, board
+        ))) {
+            boolean[] canCastle = castle(board, myPosition);
+            if (canCastle[0]) {
+                diagonalMoves.addFirst(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), 3), null));
+            }
+            if (canCastle[1]) {
+                diagonalMoves.addFirst(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), 7), null));
+            }
+        }
         return diagonalMoves;
+    }
+
+    public static Collection<ChessMove> pieceAttacks(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> diagonalMoves = (ArrayList<ChessMove>) findDiagonals(board, myPosition, 1);
+        ArrayList<ChessMove> straightMoves = (ArrayList<ChessMove>) findStraights(board, myPosition, 1);
+        diagonalMoves.removeAll(straightMoves);
+        diagonalMoves.addAll(straightMoves);
+
+        return diagonalMoves;
+    }
+
+    public static boolean[] castle(ChessBoard board, ChessPosition myPosition){
+        boolean[] result = {true,true};
+        if(board.getPiece(myPosition).getHasMoved()){
+            return new boolean[] {false, false};
+        }
+        ChessPiece leftRook = board.getPiece(new ChessPosition(myPosition.getRow(), 1));
+        if(leftRook != null) {
+            if (leftRook.getHasMoved() || leftRook.getPieceType() != ChessPiece.PieceType.ROOK) {
+                // If left rook has moved, left castling is impossible
+                result[0] = false;
+            } else {
+                // All spaces between rook and king must be clear
+                int[] checkColumns = {2, 3, 4};
+                for (int col : checkColumns) {
+                    ChessPosition checkPos = new ChessPosition(myPosition.getRow(), col);
+                    if (board.getPiece(checkPos) != null) {
+                        result[0] = false;
+                    }
+                    // Castling cannot take king through or to check
+                    if (col != 2 && AttackManager.isUnderAttack(checkPos, AttackManager.getTeamMoves(ChessGame.getOtherTeam(leftRook.getTeamColor()), true, board))) {
+                        result[0] = false;
+                    }
+                }
+            }
+        }else{
+            result[0] = false;
+        }
+        ChessPiece rightRook = board.getPiece(new ChessPosition(myPosition.getRow(), 8));
+        if(rightRook != null) {
+            if (rightRook.getHasMoved() || rightRook.getPieceType() != ChessPiece.PieceType.ROOK) {
+                // If right rook has moved, right castling is impossible
+                result[1] = false;
+            } else {
+                // All spaces between rook and king must be clear
+                int[] checkColumns = {6, 7};
+                for (int col : checkColumns) {
+                    ChessPosition checkPos = new ChessPosition(myPosition.getRow(), col);
+                    if (board.getPiece(checkPos) != null) {
+                        result[1] = false;
+                    }
+                    // Castling cannot take king through or to check
+                    if (AttackManager.isUnderAttack(checkPos, AttackManager.getTeamMoves(ChessGame.getOtherTeam(rightRook.getTeamColor()), true, board))) {
+                        result[1] = false;
+                    }
+                }
+            }
+        }else{
+            result[1] = false;
+        }
+        return result;
     }
 }
 
@@ -169,10 +244,6 @@ class PawnMovesCalculator extends PieceMovesCalculator{
                 )) != null || (myPosition.getRow() != 2 && myPosition.getRow() != 7)){
                     moves.removeFirst();
                 }
-            }
-            // Handle en passant
-            else if(enPassant(board, myPosition, moves.getFirst())){
-                moves.getFirst().setSpecialMove(ChessMove.SpecialMove.EN_PASSANT);
             }
             // Promotion logic
             if(!moves.isEmpty() && moves.getFirst().getPromotionPiece() == null &&
