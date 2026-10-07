@@ -23,31 +23,31 @@ public class Server {
                 .put("/game", this::joinGame);
     }
 
-    private void joinGame(@NotNull Context context) {
+    public void joinGame(@NotNull Context context) {
         context.result("JOINING");
     }
 
-    private void createGame(@NotNull Context context) {
+    public void createGame(@NotNull Context context) {
         context.result("CREATING");
     }
 
-    private void listGames(@NotNull Context context) {
+    public void listGames(@NotNull Context context) {
         context.result("LISTING");
     }
 
-    private void logout(@NotNull Context context) {
+    public void logout(@NotNull Context context) {
         context.result("LOGGING OUT");
     }
 
-    private void login(@NotNull Context context) {
+    public void login(@NotNull Context context) {
         context.result("LOGGING IN");
     }
 
-    private void register(@NotNull Context context) {
+    public void register(@NotNull Context context) {
         context.result("REGISTERING");
     }
 
-    private void clear(@NotNull Context context) {
+    public void clear(@NotNull Context context) {
         handler.clear();
         context.result("CLEARING");
     }

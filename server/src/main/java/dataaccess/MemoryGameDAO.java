@@ -5,9 +5,15 @@ import data.GameData;
 import java.util.ArrayList;
 
 public class MemoryGameDAO implements GameDAO{
+    private ArrayList<GameData> data;
+
+    public MemoryGameDAO(){
+        data = new ArrayList<>();
+    }
+
     @Override
     public void clear() {
-
+        data = new ArrayList<>();
     }
 
     @Override

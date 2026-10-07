@@ -3,6 +3,7 @@ package dataaccess;
 import data.AuthData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MemoryAuthDAO implements AuthDAO{
     private ArrayList<AuthData> data;
@@ -13,7 +14,7 @@ public class MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void clear() {
-
+        data = new ArrayList<>();
     }
 
     @Override
