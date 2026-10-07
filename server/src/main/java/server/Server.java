@@ -44,12 +44,17 @@ public class Server {
     }
 
     public void register(@NotNull Context context) {
+        handler.register(context.body());
         context.result("REGISTERING");
     }
 
     public void clear(@NotNull Context context) {
-        handler.clear();
-        context.result("CLEARING");
+       try {
+           handler.clear();
+           context.status(200);
+       } catch (Exception e) {
+           context.status(500);
+       }
     }
 
     public int run(int desiredPort) {
