@@ -10,7 +10,7 @@ import dataaccess.MemoryUserDAO;
 import java.util.UUID;
 
 public class AuthService {
-    MemoryAuthDAO authDAO = new MemoryAuthDAO();
+    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
 
     public void clear(){
         authDAO.clear();

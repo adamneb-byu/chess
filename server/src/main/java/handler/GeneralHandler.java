@@ -9,6 +9,7 @@ import service.GameService;
 import service.UserService;
 
 import javax.xml.validation.Validator;
+import java.util.ArrayList;
 
 public class GeneralHandler {
     private final AuthService authService;
@@ -41,5 +42,9 @@ public class GeneralHandler {
         } catch (JsonSyntaxException e) {
             throw new BadInputException("Error: Invalid Json input");
         }
+    }
+
+    public ArrayList<UserData> listUsers(){
+        return userService.listUsers();
     }
 }

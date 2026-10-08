@@ -30,4 +30,8 @@ public class MemoryUserDAO implements UserDAO{
         }
         return null;
     }
+
+    public ArrayList<UserData> listUsers(){
+        return data;
+    }
 }

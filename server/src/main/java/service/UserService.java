@@ -5,6 +5,8 @@ import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import handler.AlreadyTakenException;
 
+import java.util.ArrayList;
+
 public class UserService {
     private final UserDAO userDAO;
 
@@ -24,8 +26,8 @@ public class UserService {
         }
     }
 
-    public void addUser(UserData request){
-
+    public ArrayList<UserData> listUsers(){
+        return userDAO.listUsers();
     }
 }
 
