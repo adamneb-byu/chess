@@ -7,6 +7,8 @@ import io.javalin.*;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class Server {
 
     private final Javalin javalin;
@@ -51,9 +53,10 @@ public class Server {
             context.result(result);
         }catch(BadInputException e){
             context.status(400);
-            //context.result("Error: bad request");
+            context.result("{\"message\": \"Error: bad request\"}");
         }catch(AlreadyTakenException e){
             context.status(403);
+            context.result("{\"message\": \"Error: username already taken\"}");
         }
     }
 
