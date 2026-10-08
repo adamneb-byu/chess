@@ -18,8 +18,8 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void createAuth(String username) {
-
+    public void createAuth(AuthData data) {
+        this.data.add(data);
     }
 
     @Override

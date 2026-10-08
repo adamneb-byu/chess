@@ -1,12 +1,14 @@
 package handler;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import data.AuthData;
+import data.UserData;
 import service.AuthService;
 import service.GameService;
-import service.RegisterRequest;
 import service.UserService;
 
-import java.util.Map;
+import javax.xml.validation.Validator;
 
 public class GeneralHandler {
     private final AuthService authService;
@@ -27,17 +29,17 @@ public class GeneralHandler {
         userService.clear();
     }
 
-    public void register(String request) throws BadInputException{
-        var reqMap = serializer.fromJson(request, Map.class);
-        if(reqMap.containsKey("username") && reqMap.containsKey("password")
-        && reqMap.containsKey("email")){
-            userService.addUser(new RegisterRequest(
-                    (String) reqMap.get("username"),
-                    (String) reqMap.get("password"),
-                    (String) reqMap.get("email")
-            ));
-        }else{
-            throw new BadInputException("Error: bad request");
+    public String register(String request) throws BadInputException{
+        try {
+            var regRequest = serializer.fromJson(request, UserData.class);
+            if(!JsonValidator.validateUserData(regRequest)){
+                throw new JsonSyntaxException("Error: bad input");
+            }
+            userService.register(regRequest);
+            AuthData data = authService.registerAuth(regRequest);
+            return serializer.toJson(data);
+        } catch (JsonSyntaxException e) {
+            throw new BadInputException("Error: Invalid Json input");
         }
     }
 }

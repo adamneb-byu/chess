@@ -1,5 +1,7 @@
 package server;
 
+import handler.AlreadyTakenException;
+import handler.BadInputException;
 import handler.GeneralHandler;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -44,8 +46,15 @@ public class Server {
     }
 
     public void register(@NotNull Context context) {
-        handler.register(context.body());
-        context.result("REGISTERING");
+        try {
+            var result = handler.register(context.body());
+            context.result(result);
+        }catch(BadInputException e){
+            context.status(400);
+            //context.result("Error: bad request");
+        }catch(AlreadyTakenException e){
+            context.status(403);
+        }
     }
 
     public void clear(@NotNull Context context) {

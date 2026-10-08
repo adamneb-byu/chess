@@ -4,6 +4,6 @@ import data.UserData;
 
 public interface UserDAO {
     void clear();
-    void createUser(String username);
+    void createUser(UserData data);
     UserData getUser(String username);
 }

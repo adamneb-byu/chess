@@ -17,12 +17,17 @@ public class MemoryUserDAO implements UserDAO{
     }
 
     @Override
-    public void createUser(String username) {
-
+    public void createUser(UserData data) {
+        this.data.add(data);
     }
 
     @Override
     public UserData getUser(String username) {
+        for(UserData user : data){
+            if(user.username().equals(username)){
+                return user;
+            }
+        }
         return null;
     }
 }
