@@ -8,4 +8,9 @@ public class JsonValidator {
                 data.password() != null &&
                 data.email() != null;
     }
+
+    public static boolean validateLoginData(LoginRequest data){
+        return data.username() != null &&
+                data.password() != null;
+    }
 }

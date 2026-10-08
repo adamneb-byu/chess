@@ -44,6 +44,21 @@ public class GeneralHandler {
         }
     }
 
+    public String login(String request) throws BadInputException{
+        try {
+            var loginRequest = serializer.fromJson(request, LoginRequest.class);
+            if(!JsonValidator.validateLoginData(loginRequest)){
+                throw new JsonSyntaxException("Error: bad input");
+            }
+            userService.verifyPassword(loginRequest);
+            var data = authService.loginAuth(loginRequest);
+            //var data = new AuthData(token, loginRequest.username());
+            return serializer.toJson(data);
+        } catch (JsonSyntaxException e) {
+            throw new BadInputException("Error: Invalid Json input");
+        }
+    }
+
     public ArrayList<UserData> listUsers(){
         return userService.listUsers();
     }

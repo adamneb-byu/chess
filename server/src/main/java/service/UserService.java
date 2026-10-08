@@ -4,6 +4,7 @@ import data.UserData;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import handler.AlreadyTakenException;
+import handler.LoginRequest;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,15 @@ public class UserService {
             userDAO.createUser(request);
         }else{
             throw new AlreadyTakenException("Erorr: Username is already taken");
+        }
+    }
+
+    public void verifyPassword(LoginRequest request){
+        var data = userDAO.getUser(request.username());
+        if(data == null){
+            throw new NotFoundException("Error: user not found");
+        }else if(!data.password().equals(request.password())){
+            throw new IncorrectPasswordException("Error: incorrect password");
         }
     }
 
