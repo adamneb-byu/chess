@@ -3,11 +3,11 @@ package server;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
+import service.IncorrectPasswordException;
+import service.NotFoundException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public class Server {
 
@@ -44,7 +44,17 @@ public class Server {
     }
 
     public void login(@NotNull Context context) {
-        context.result("LOGGING IN");
+        try{
+            var result = handler.login(context.body());
+            context.result(result);
+        }catch(BadInputException e){
+            context.status(400);
+            context.result("{\"message\": \"Error: bad request\"}");
+        }catch(NotFoundException e){
+            context.status(404).result("{\"message\": \"Error: user not found\"}");
+        }catch(IncorrectPasswordException e){
+            context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }
     }
 
     public void register(@NotNull Context context) {
