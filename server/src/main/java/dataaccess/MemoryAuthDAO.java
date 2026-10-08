@@ -1,6 +1,7 @@
 package dataaccess;
 
 import data.AuthData;
+import service.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,16 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void deleteAuth(AuthData data) {
-
+    public void deleteAuth(String authToken) {
+        AuthData removeMe = null;
+        for(AuthData auth : data){
+            if(auth.authToken().equals(authToken)){
+                removeMe = auth;
+            }
+        }
+        data.remove(removeMe);
+        if(removeMe == null){
+            throw new NotFoundException("Error: authToken not found");
+        }
     }
 }

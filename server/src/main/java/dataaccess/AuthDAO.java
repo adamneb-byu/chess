@@ -6,5 +6,5 @@ public interface AuthDAO {
     void clear();
     void createAuth(AuthData data);
     AuthData getAuth(String authToken);
-    void deleteAuth(AuthData data);
+    void deleteAuth(String authToken);
 }

@@ -31,6 +31,10 @@ public class AuthService {
         return data;
     }
 
+    public void logout(String authToken){
+        authDAO.deleteAuth(authToken);
+    }
+
     public String generateToken(){
         return UUID.randomUUID().toString();
     }

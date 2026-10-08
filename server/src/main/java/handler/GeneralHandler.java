@@ -59,6 +59,10 @@ public class GeneralHandler {
         }
     }
 
+    public void logout(String authToken){
+        authService.logout(authToken);
+    }
+
     public ArrayList<UserData> listUsers(){
         return userService.listUsers();
     }

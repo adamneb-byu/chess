@@ -3,6 +3,7 @@ package server;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
+import io.javalin.http.Header;
 import service.IncorrectPasswordException;
 import service.NotFoundException;
 import io.javalin.*;
@@ -40,7 +41,11 @@ public class Server {
     }
 
     public void logout(@NotNull Context context) {
-        context.result("LOGGING OUT");
+        try{
+            handler.logout(context.header(Header.AUTHORIZATION));
+        }catch(NotFoundException e){
+            context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }
     }
 
     public void login(@NotNull Context context) {
