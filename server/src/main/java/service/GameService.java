@@ -6,6 +6,7 @@ import dataaccess.MemoryGameDAO;
 import handler.AlreadyTakenException;
 import handler.GameCreateResult;
 import handler.GeneralHandler;
+import handler.JoinRequest;
 
 public class GameService {
     private final MemoryGameDAO gameDAO;
@@ -23,6 +24,10 @@ public class GameService {
             throw new AlreadyTakenException("Error: game name already taken");
         }
         return gameDAO.createGame(gameName);
+    }
+
+    public void joinGame(JoinRequest request, String username){
+        gameDAO.addUser(request, username);
     }
 
     public GameDataPublic[] listGames(){

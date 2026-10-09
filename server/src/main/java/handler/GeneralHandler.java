@@ -5,10 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import data.AuthData;
 import data.GameData;
 import data.UserData;
-import service.AuthService;
-import service.GameService;
-import service.NotFoundException;
-import service.UserService;
+import service.*;
 
 import javax.xml.validation.Validator;
 import java.util.ArrayList;
@@ -74,7 +71,7 @@ public class GeneralHandler {
             var result = new GameCreateResult(gameService.createGame(gameName));
             return serializer.toJson(result);
         }else{
-            throw new NotFoundException("Error: invalid authToken");
+            throw new UnauthorizedException("Error: invalid authToken");
         }
     }
 
@@ -83,7 +80,20 @@ public class GeneralHandler {
             var map = Map.of("games", gameService.listGames());
             return serializer.toJson(map);
         }else{
-            throw new NotFoundException("Error: invalid authToken");
+            throw new UnauthorizedException("Error: invalid authToken");
+        }
+    }
+
+    public void joinGame(String request, String authToken){
+        if(authService.verifyAuth(authToken)){
+            var joinReq = serializer.fromJson(request, JoinRequest.class);
+            if(joinReq.playerColor() == null || joinReq.gameID() == 0){
+                throw new BadInputException("Error: invalid input");
+            }
+            String username = authService.getUsername(authToken);
+            gameService.joinGame(joinReq, username);
+        }else{
+            throw new UnauthorizedException("Error: invalid authToken");
         }
     }
 

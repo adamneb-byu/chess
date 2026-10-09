@@ -40,6 +40,10 @@ public class AuthService {
         return authDAO.verifyAuth(authToken);
     }
 
+    public String getUsername(String authToken){
+        return authDAO.getAuth(authToken).username();
+    }
+
     public String generateToken(){
         return UUID.randomUUID().toString();
     }

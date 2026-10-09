@@ -9,6 +9,7 @@ import service.NotFoundException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
+import service.UnauthorizedException;
 
 public class Server {
 
@@ -29,7 +30,17 @@ public class Server {
     }
 
     public void joinGame(@NotNull Context context) {
-        context.result("JOINING");
+        try{
+            handler.joinGame(context.body(),context.header(Header.AUTHORIZATION));
+        }catch(UnauthorizedException e){
+            context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }catch(NotFoundException e){
+            context.status(400).result("{\"message\": \"Error: not found\"}");
+        }catch(BadInputException e){
+            context.status(400).result("{\"message\": \"Error: bad request\"}");
+        }catch(AlreadyTakenException e){
+            context.status(403).result("{\"message\": \"Error: already taken\"}");
+        }
     }
 
     public void createGame(@NotNull Context context) {
@@ -40,7 +51,7 @@ public class Server {
             context.status(400).result("{\"message\": \"Error: bad request\"}");
         }catch (AlreadyTakenException e){
             context.status(403).result("{\"message\": \"Error: already taken\"}");
-        }catch (NotFoundException e){
+        }catch (UnauthorizedException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
         }
     }
@@ -48,7 +59,7 @@ public class Server {
     public void listGames(@NotNull Context context) {
         try{
             context.result(handler.listGames(context.header(Header.AUTHORIZATION)));
-        }catch(NotFoundException e){
+        }catch(UnauthorizedException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
         }
     }
@@ -69,7 +80,7 @@ public class Server {
             context.status(400);
             context.result("{\"message\": \"Error: bad request\"}");
         }catch(NotFoundException e){
-            context.status(404).result("{\"message\": \"Error: user not found\"}");
+            context.status(401).result("{\"message\": \"Error: user not found\"}");
         }catch(IncorrectPasswordException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
         }

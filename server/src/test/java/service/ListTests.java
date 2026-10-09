@@ -47,7 +47,7 @@ public class ListTests {
     @Test
     @DisplayName("Cannot list games without a valid authToken")
     public void invalidAuthToken(){
-        assertThrows(NotFoundException.class,() -> {
+        assertThrows(UnauthorizedException.class,() -> {
             handler.listGames("invalid authtoken be like");
         });
     }

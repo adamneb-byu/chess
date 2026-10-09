@@ -2,6 +2,7 @@ package dataaccess;
 
 import data.GameData;
 import data.GameDataPublic;
+import handler.JoinRequest;
 
 import java.util.ArrayList;
 
@@ -10,8 +11,9 @@ public interface GameDAO {
     int createGame(String gameName);
     GameData getGame(int gameID);
     ArrayList<GameData> listGames();
-    void updateGame(int gameID, String update);
+    void addUser(JoinRequest request, String username);
     boolean gameExists(String gameName);
     int newGameID();
     GameDataPublic[] getGameList();
+    void updateGame(int gameID, String update);
 }

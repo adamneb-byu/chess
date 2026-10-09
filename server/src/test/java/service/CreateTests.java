@@ -29,7 +29,7 @@ public class CreateTests {
     @Test
     @DisplayName("Cannot create a game without a valid authToken")
     public void invalidAuthToken(){
-        assertThrows(NotFoundException.class,() -> {
+        assertThrows(UnauthorizedException.class,() -> {
             var gamename = serializer.toJson(new GameName("Scarlet Forest"));
             var game = handler.createGame(gamename, "invalid authtoken be like");
         });
