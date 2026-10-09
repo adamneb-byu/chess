@@ -43,7 +43,8 @@ public class CreateTests {
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
         var game1 = serializer.fromJson(handler.createGame(serializer.toJson(new GameName("Castle Town")), authUser1.authToken()), GameData.class);
         assertThrows(AlreadyTakenException.class,() -> {
-            var game2 = serializer.fromJson(handler.createGame(serializer.toJson(new GameName("Castle Town")), authUser1.authToken()), GameData.class);
+            var name = new GameName("Castle Town");
+            var game2 = serializer.fromJson(handler.createGame(serializer.toJson(name), authUser1.authToken()), GameData.class);
         });
     }
 

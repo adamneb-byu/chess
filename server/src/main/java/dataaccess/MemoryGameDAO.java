@@ -104,9 +104,4 @@ public class MemoryGameDAO implements GameDAO{
     public ArrayList<GameData> listGames() {
         return data;
     }
-
-    @Override
-    public void updateGame(int gameID, String update) {
-
-    }
 }

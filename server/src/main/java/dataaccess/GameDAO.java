@@ -15,5 +15,4 @@ public interface GameDAO {
     boolean gameExists(String gameName);
     int newGameID();
     GameDataPublic[] getGameList();
-    void updateGame(int gameID, String update);
 }

@@ -35,7 +35,8 @@ public class JoinTests {
         var user1 = new UserData("flowery","jarona","flowersblooms@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
-        var game = serializer.fromJson(handler.createGame(serializer.toJson(new GameName("Garden of Hopes and Dreams")), authUser1.authToken()), GameData.class);
+        var name = new GameName("Garden of Hopes and Dreams");
+        var game = serializer.fromJson(handler.createGame(serializer.toJson(name), authUser1.authToken()), GameData.class);
         var joinReq = new JoinRequest("BLACK",game.gameID());
         assertThrows(UnauthorizedException.class,() -> {
             handler.joinGame(serializer.toJson(joinReq), "sustingus!");
@@ -51,7 +52,8 @@ public class JoinTests {
         var user2 = new UserData("pink","nyanyagirl","mewmewmagic@delta.rune");
         String jsonUser2 = handler.register(serializer.toJson(user2));
         var authUser2 = serializer.fromJson(jsonUser2, AuthData.class);
-        var game = serializer.fromJson(handler.createGame(serializer.toJson(new GameName("Garden of Hopes and Dreams")), authUser1.authToken()), GameData.class);
+        var name = new GameName("Garden of Hopes and Dreams");
+        var game = serializer.fromJson(handler.createGame(serializer.toJson(name), authUser1.authToken()), GameData.class);
         var joinReq = new JoinRequest("BLACK",game.gameID());
         handler.joinGame(serializer.toJson(joinReq), authUser1.authToken());
         assertThrows(AlreadyTakenException.class,() -> {
@@ -65,7 +67,8 @@ public class JoinTests {
         var user1 = new UserData("burghley", "gamer9999", "bluebirdgamez@delta.rune");
         var jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1,AuthData.class);
-        var game = serializer.fromJson(handler.createGame(serializer.toJson(new GameName("Garden of Hopes and Dreams")), authUser1.authToken()), GameData.class);
+        var name = new GameName("Garden of Hopes and Dreams");
+        var game = serializer.fromJson(handler.createGame(serializer.toJson(name), authUser1.authToken()), GameData.class);
         var badRequest = new JoinRequest("BLUE",game.gameID());
         assertThrows(BadInputException.class,() -> {
             handler.createGame(serializer.toJson(badRequest), authUser1.authToken());
