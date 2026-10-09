@@ -103,4 +103,7 @@ public class GeneralHandler {
     public ArrayList<AuthData> listAuth(){
         return authService.listAuth();
     }
+    public GameData getGame(int gameID){
+        return gameService.getGame(gameID);
+    }
 }

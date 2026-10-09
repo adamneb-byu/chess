@@ -1,5 +1,6 @@
 package service;
 
+import data.GameData;
 import data.GameDataPublic;
 import dataaccess.GameDAO;
 import dataaccess.MemoryGameDAO;
@@ -32,5 +33,9 @@ public class GameService {
 
     public GameDataPublic[] listGames(){
         return gameDAO.getGameList();
+    }
+
+    public GameData getGame(int gameID){
+        return gameDAO.getGame(gameID);
     }
 }
