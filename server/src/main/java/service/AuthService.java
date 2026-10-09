@@ -8,6 +8,7 @@ import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
 import handler.LoginRequest;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class AuthService {
@@ -37,5 +38,9 @@ public class AuthService {
 
     public String generateToken(){
         return UUID.randomUUID().toString();
+    }
+
+    public ArrayList<AuthData> listAuth(){
+        return authDAO.listAuth();
     }
 }

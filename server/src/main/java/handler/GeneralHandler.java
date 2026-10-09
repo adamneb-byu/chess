@@ -66,4 +66,7 @@ public class GeneralHandler {
     public ArrayList<UserData> listUsers(){
         return userService.listUsers();
     }
+    public ArrayList<AuthData> listAuth(){
+        return authService.listAuth();
+    }
 }

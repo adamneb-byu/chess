@@ -41,4 +41,9 @@ public class MemoryAuthDAO implements AuthDAO{
             throw new NotFoundException("Error: authToken not found");
         }
     }
+
+    @Override
+    public ArrayList<AuthData> listAuth(){
+        return data;
+    }
 }
