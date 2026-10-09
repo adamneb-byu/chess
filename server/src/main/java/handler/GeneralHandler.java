@@ -71,7 +71,7 @@ public class GeneralHandler {
             if(gameName == null){
                 throw new BadInputException("Error: bad input");
             }
-            var result = new GameCreateResult(gameService.createGame(request));
+            var result = new GameCreateResult(gameService.createGame(gameName));
             return serializer.toJson(result);
         }else{
             throw new NotFoundException("Error: invalid authToken");
