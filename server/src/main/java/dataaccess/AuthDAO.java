@@ -10,4 +10,5 @@ public interface AuthDAO {
     AuthData getAuth(String authToken);
     void deleteAuth(String authToken);
     ArrayList<AuthData> listAuth();
+    boolean verifyAuth(String authToken);
 }

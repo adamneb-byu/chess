@@ -1,14 +1,17 @@
 package dataaccess;
 
+import chess.ChessGame;
 import data.GameData;
 
 import java.util.ArrayList;
 
 public class MemoryGameDAO implements GameDAO{
     private ArrayList<GameData> data;
+    private int currentID;
 
     public MemoryGameDAO(){
         data = new ArrayList<>();
+        currentID = 1300;
     }
 
     @Override
@@ -17,8 +20,27 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public void createGame() {
+    public int createGame(String gameName) {
+        int gameID = newGameID();
+        var newGame = new GameData(gameID,"","",gameName,new ChessGame());
+        data.add(newGame);
+        return gameID;
+    }
 
+    @Override
+    public boolean gameExists(String gameName){
+        for(GameData game : data){
+            if(game.gameName().equals(gameName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int newGameID(){
+        currentID++;
+        return currentID;
     }
 
     @Override

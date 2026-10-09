@@ -43,6 +43,16 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
+    public boolean verifyAuth(String authToken){
+        for(AuthData auth : data){
+            if(auth.authToken().equals(authToken)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public ArrayList<AuthData> listAuth(){
         return data;
     }

@@ -3,9 +3,11 @@ package handler;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import data.AuthData;
+import data.GameData;
 import data.UserData;
 import service.AuthService;
 import service.GameService;
+import service.NotFoundException;
 import service.UserService;
 
 import javax.xml.validation.Validator;
@@ -52,7 +54,6 @@ public class GeneralHandler {
             }
             userService.verifyPassword(loginRequest);
             var data = authService.loginAuth(loginRequest);
-            //var data = new AuthData(token, loginRequest.username());
             return serializer.toJson(data);
         } catch (JsonSyntaxException e) {
             throw new BadInputException("Error: Invalid Json input");
@@ -61,6 +62,19 @@ public class GeneralHandler {
 
     public void logout(String authToken){
         authService.logout(authToken);
+    }
+
+    public String createGame(String request, String authToken){
+        if(authService.verifyAuth(authToken)){
+            String gameName = serializer.fromJson(request, GameName.class).gameName();
+            if(gameName == null){
+                throw new BadInputException("Error: bad input");
+            }
+            var result = new GameCreateResult(gameService.createGame(request));
+            return serializer.toJson(result);
+        }else{
+            throw new NotFoundException("Error: invalid authToken");
+        }
     }
 
     public ArrayList<UserData> listUsers(){

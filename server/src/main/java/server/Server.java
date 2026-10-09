@@ -33,7 +33,16 @@ public class Server {
     }
 
     public void createGame(@NotNull Context context) {
-        context.result("CREATING");
+        try{
+            String gameID = handler.createGame(context.body(),context.header(Header.AUTHORIZATION));
+            context.result(gameID);
+        }catch (BadInputException e){
+            context.status(400).result("{\"message\": \"Error: bad request\"}");
+        }catch (AlreadyTakenException e){
+            context.status(403).result("{\"message\": \"Error: already taken\"}");
+        }catch (NotFoundException e){
+            context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }
     }
 
     public void listGames(@NotNull Context context) {

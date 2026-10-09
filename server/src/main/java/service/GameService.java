@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.GameDAO;
 import dataaccess.MemoryGameDAO;
+import handler.AlreadyTakenException;
 import handler.GeneralHandler;
 
 public class GameService {
@@ -13,5 +14,12 @@ public class GameService {
 
     public void clear(){
         gameDAO.clear();
+    }
+
+    public int createGame(String gameName){
+        if(gameDAO.gameExists(gameName)){
+            throw new AlreadyTakenException("Error: game name already taken");
+        }
+        return gameDAO.createGame(gameName);
     }
 }

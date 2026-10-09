@@ -36,6 +36,10 @@ public class AuthService {
         authDAO.deleteAuth(authToken);
     }
 
+    public boolean verifyAuth(String authToken){
+        return authDAO.verifyAuth(authToken);
+    }
+
     public String generateToken(){
         return UUID.randomUUID().toString();
     }
