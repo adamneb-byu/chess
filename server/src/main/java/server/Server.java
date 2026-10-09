@@ -46,7 +46,11 @@ public class Server {
     }
 
     public void listGames(@NotNull Context context) {
-        context.result("LISTING");
+        try{
+            context.result(handler.listGames(context.header(Header.AUTHORIZATION)));
+        }catch(NotFoundException e){
+            context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }
     }
 
     public void logout(@NotNull Context context) {

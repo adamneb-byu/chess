@@ -12,6 +12,7 @@ import service.UserService;
 
 import javax.xml.validation.Validator;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GeneralHandler {
     private final AuthService authService;
@@ -72,6 +73,15 @@ public class GeneralHandler {
             }
             var result = new GameCreateResult(gameService.createGame(request));
             return serializer.toJson(result);
+        }else{
+            throw new NotFoundException("Error: invalid authToken");
+        }
+    }
+
+    public String listGames(String authToken){
+        if(authService.verifyAuth(authToken)){
+            var map = Map.of("games", gameService.listGames());
+            return serializer.toJson(map);
         }else{
             throw new NotFoundException("Error: invalid authToken");
         }

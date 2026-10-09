@@ -1,8 +1,10 @@
 package service;
 
+import data.GameDataPublic;
 import dataaccess.GameDAO;
 import dataaccess.MemoryGameDAO;
 import handler.AlreadyTakenException;
+import handler.GameCreateResult;
 import handler.GeneralHandler;
 
 public class GameService {
@@ -21,5 +23,9 @@ public class GameService {
             throw new AlreadyTakenException("Error: game name already taken");
         }
         return gameDAO.createGame(gameName);
+    }
+
+    public GameDataPublic[] listGames(){
+        return gameDAO.getGameList();
     }
 }

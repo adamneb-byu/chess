@@ -1,6 +1,7 @@
 package dataaccess;
 
 import data.GameData;
+import data.GameDataPublic;
 
 import java.util.ArrayList;
 
@@ -12,4 +13,5 @@ public interface GameDAO {
     void updateGame(int gameID, String update);
     boolean gameExists(String gameName);
     int newGameID();
+    GameDataPublic[] getGameList();
 }

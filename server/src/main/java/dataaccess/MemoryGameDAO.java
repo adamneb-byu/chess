@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import data.GameData;
+import data.GameDataPublic;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,20 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
+    public GameDataPublic[] getGameList(){
+        GameDataPublic[] list = new GameDataPublic[data.size()];
+        int counter = 0;
+        for(GameData game : data){
+            list[counter] = new GameDataPublic(
+                    game.gameID(), game.whiteUsername(),
+                    game.blackUsername(),game.gameName()
+            );
+            counter++;
+        }
+        return list;
+    }
+
+    @Override
     public int newGameID(){
         currentID++;
         return currentID;
@@ -50,7 +65,7 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public ArrayList<GameData> listGames() {
-        return null;
+        return data;
     }
 
     @Override
