@@ -85,7 +85,7 @@ public class DatabaseAuthDAO implements AuthDAO{
                 preparedStatement.executeUpdate();
             }
         }catch(Exception e){
-            throw new DataAccessException("Unable to clear table: " + e.getMessage());
+            throw new DataAccessException("Unable to execute statement: " + e.getMessage());
         }
     }
 
