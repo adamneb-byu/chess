@@ -53,7 +53,7 @@ public class AuthService {
         return UUID.randomUUID().toString();
     }
 
-    public ArrayList<AuthData> listAuth(){
+    public ArrayList<AuthData> listAuth() throws DataAccessException {
         return authDAO.listAuth();
     }
 }

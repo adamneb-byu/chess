@@ -3,6 +3,7 @@ package service;
 import com.google.gson.Gson;
 import data.AuthData;
 import data.UserData;
+import dataaccess.DataAccessException;
 import handler.BadInputException;
 import handler.GeneralHandler;
 import handler.LoginRequest;
@@ -20,7 +21,7 @@ public class LogoutTests {
 
     @Test
     @DisplayName("Log out of an account")
-    public void loginTest(){
+    public void loginTest() throws DataAccessException {
         var data1 = new UserData("ralsei","ihateflowery","prince.ralsei@delta.rune");
         String data2 = handler.register(serializer.toJson(data1));
         handler.logout(serializer.fromJson(data2, AuthData.class).authToken());

@@ -9,6 +9,6 @@ public interface AuthDAO {
     void createAuth(AuthData data) throws DataAccessException;
     AuthData getAuth(String authToken) throws DataAccessException;
     void deleteAuth(String authToken);
-    ArrayList<AuthData> listAuth();
+    ArrayList<AuthData> listAuth() throws DataAccessException;
     boolean verifyAuth(String authToken) throws DataAccessException;
 }

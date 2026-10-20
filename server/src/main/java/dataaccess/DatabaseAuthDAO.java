@@ -2,6 +2,8 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import data.AuthData;
+import io.javalin.http.NotAcceptableResponse;
+import service.NotFoundException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,12 +47,30 @@ public class DatabaseAuthDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) {
-        throw new RuntimeException("Not implemented");
+        try {
+            String statement = "DELETE FROM auth WHERE authToken='" + authToken + "'";
+            executeStatement(statement);
+        }catch(DataAccessException e){
+            throw new NotFoundException("Error: authToken not found");
+        }
     }
 
     @Override
-    public ArrayList<AuthData> listAuth() {
-        throw new RuntimeException("Not implemented");
+    public ArrayList<AuthData> listAuth() throws DataAccessException {
+        var list = new ArrayList<AuthData>();
+        try(var conn = DatabaseManager.getConnection()){
+            var statement = "SELECT username, authToken FROM auth";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        list.add(readAuth(rs));
+                    }
+                }
+            }
+        }catch (Exception e){
+            throw new DataAccessException("Unable to get data from database:" + e.getMessage());
+        }
+        return list;
     }
 
     @Override
