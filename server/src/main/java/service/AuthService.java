@@ -2,30 +2,35 @@ package service;
 
 import data.AuthData;
 import data.UserData;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import handler.LoginRequest;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class AuthService {
-    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
+    private final DatabaseAuthDAO authDAO;
 
-    public void clear(){
+    public AuthService(){
+        try {
+            authDAO = new DatabaseAuthDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void clear() throws DataAccessException {
         authDAO.clear();
     }
 
-    public AuthData registerAuth(UserData request){
+    public AuthData registerAuth(UserData request) throws DataAccessException {
         String token = generateToken();
         AuthData data = new AuthData(token, request.username());
         authDAO.createAuth(data);
         return data;
     }
 
-    public AuthData loginAuth(LoginRequest request){
+    public AuthData loginAuth(LoginRequest request) throws DataAccessException {
         String token = generateToken();
         AuthData data = new AuthData(token, request.username());
         authDAO.createAuth(data);
@@ -40,7 +45,7 @@ public class AuthService {
         return authDAO.verifyAuth(authToken);
     }
 
-    public String getUsername(String authToken){
+    public String getUsername(String authToken) throws DataAccessException {
         return authDAO.getAuth(authToken).username();
     }
 

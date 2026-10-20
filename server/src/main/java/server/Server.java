@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.DataAccessException;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
@@ -27,6 +28,7 @@ public class Server {
                 .get("/game", this::listGames)
                 .post("/game", this::createGame)
                 .put("/game", this::joinGame);
+
     }
 
     public void joinGame(@NotNull Context context) {

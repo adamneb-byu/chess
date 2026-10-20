@@ -2,12 +2,13 @@ package service;
 
 import com.google.gson.Gson;
 import data.UserData;
+import dataaccess.DataAccessException;
 import handler.GeneralHandler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import server.Server;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClearTests {
     private final GeneralHandler handler = new GeneralHandler();
@@ -17,7 +18,7 @@ public class ClearTests {
     @DisplayName("Clearing an empty database does nothing")
     public void clearEmpty(){
         assertEquals(0, handler.listUsers().size());
-        handler.clear();
+        assertDoesNotThrow(handler::clear, "DataAccessException!");
         assertEquals(0, handler.listUsers().size());
     }
 
@@ -31,7 +32,7 @@ public class ClearTests {
         var data3 = new UserData("ralsei","0ih2d8y2mpp","prince.ralsei@delta.rune");
         handler.register(serializer.toJson(data3));
         assertEquals(3, handler.listUsers().size());
-        handler.clear();
+        assertDoesNotThrow(handler::clear, "DataAccessException!");
         assertEquals(0, handler.listUsers().size());
     }
 }

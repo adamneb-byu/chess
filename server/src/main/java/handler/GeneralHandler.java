@@ -5,8 +5,10 @@ import com.google.gson.JsonSyntaxException;
 import data.AuthData;
 import data.GameData;
 import data.UserData;
+import dataaccess.DataAccessException;
 import service.*;
 
+import javax.xml.crypto.Data;
 import javax.xml.validation.Validator;
 import java.util.ArrayList;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class GeneralHandler {
         serializer = new Gson();
     }
 
-    public void clear(){
+    public void clear() throws DataAccessException {
         authService.clear();
         gameService.clear();
         userService.clear();
@@ -39,7 +41,7 @@ public class GeneralHandler {
             userService.register(regRequest);
             AuthData data = authService.registerAuth(regRequest);
             return serializer.toJson(data);
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException | DataAccessException e) {
             throw new BadInputException("Error: Invalid Json input");
         }
     }
@@ -53,7 +55,7 @@ public class GeneralHandler {
             userService.verifyPassword(loginRequest);
             var data = authService.loginAuth(loginRequest);
             return serializer.toJson(data);
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException | DataAccessException e) {
             throw new BadInputException("Error: Invalid Json input");
         }
     }
