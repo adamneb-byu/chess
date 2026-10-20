@@ -65,36 +65,48 @@ public class GeneralHandler {
     }
 
     public String createGame(String request, String authToken){
-        if(authService.verifyAuth(authToken)){
-            String gameName = serializer.fromJson(request, GameName.class).gameName();
-            if(gameName == null){
-                throw new BadInputException("Error: bad input");
+        try {
+            if (authService.verifyAuth(authToken)) {
+                String gameName = serializer.fromJson(request, GameName.class).gameName();
+                if (gameName == null) {
+                    throw new BadInputException("Error: bad input");
+                }
+                var result = new GameCreateResult(gameService.createGame(gameName));
+                return serializer.toJson(result);
+            } else {
+                throw new UnauthorizedException("Error: invalid authToken");
             }
-            var result = new GameCreateResult(gameService.createGame(gameName));
-            return serializer.toJson(result);
-        }else{
-            throw new UnauthorizedException("Error: invalid authToken");
+        }catch(DataAccessException e){
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     public String listGames(String authToken){
-        if(authService.verifyAuth(authToken)){
-            var map = Map.of("games", gameService.listGames());
-            return serializer.toJson(map);
-        }else{
-            throw new UnauthorizedException("Error: invalid authToken");
+            try{
+            if(authService.verifyAuth(authToken)){
+                var map = Map.of("games", gameService.listGames());
+                return serializer.toJson(map);
+            }else{
+                throw new UnauthorizedException("Error: invalid authToken");
+            }
+        }catch(DataAccessException e){
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     public void joinGame(String request, String authToken){
-        if(authService.verifyAuth(authToken)){
-            var joinReq = serializer.fromJson(request, JoinRequest.class);
-            if(joinReq.playerColor() == null || joinReq.gameID() == 0){
-                throw new BadInputException("Error: invalid input");
+        try {
+            if (authService.verifyAuth(authToken)) {
+                var joinReq = serializer.fromJson(request, JoinRequest.class);
+                if (joinReq.playerColor() == null || joinReq.gameID() == 0) {
+                    throw new BadInputException("Error: invalid input");
+                }
+                String username = authService.getUsername(authToken);
+                gameService.joinGame(joinReq, username);
+            } else {
+                throw new UnauthorizedException("Error: invalid authToken");
             }
-            String username = authService.getUsername(authToken);
-            gameService.joinGame(joinReq, username);
-        }else{
+        }catch(DataAccessException e){
             throw new UnauthorizedException("Error: invalid authToken");
         }
     }

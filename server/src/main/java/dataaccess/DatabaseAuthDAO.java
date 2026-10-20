@@ -1,7 +1,10 @@
 package dataaccess;
 
+import com.google.gson.Gson;
 import data.AuthData;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -27,9 +30,17 @@ public class DatabaseAuthDAO implements AuthDAO{
         try(var conn = DatabaseManager.getConnection()){
             var statement = "SELECT username, authToken FROM auth WHERE authToken='" +
                     authToken + "'";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readAuth(rs);
+                    }
+                }
+            }
         }catch (Exception e){
             throw new DataAccessException("Unable to get data from database:" + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -43,8 +54,9 @@ public class DatabaseAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean verifyAuth(String authToken) {
-        throw new RuntimeException("Not implemented");
+    public boolean verifyAuth(String authToken) throws DataAccessException {
+        var auth = getAuth(authToken);
+        return auth != null;
     }
 
     private void executeStatement(String statement) throws DataAccessException {
@@ -79,5 +91,11 @@ public class DatabaseAuthDAO implements AuthDAO{
         } catch (Exception e) {
             throw new DataAccessException("Unable to configure database:" + e.getMessage());
         }
+    }
+
+    private AuthData readAuth(ResultSet rs) throws SQLException {
+        var username = rs.getString("username");
+        var token = rs.getString("authToken");
+        return new AuthData(token, username);
     }
 }

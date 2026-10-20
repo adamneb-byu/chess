@@ -10,5 +10,5 @@ public interface AuthDAO {
     AuthData getAuth(String authToken) throws DataAccessException;
     void deleteAuth(String authToken);
     ArrayList<AuthData> listAuth();
-    boolean verifyAuth(String authToken);
+    boolean verifyAuth(String authToken) throws DataAccessException;
 }

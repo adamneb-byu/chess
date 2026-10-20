@@ -41,7 +41,7 @@ public class AuthService {
         authDAO.deleteAuth(authToken);
     }
 
-    public boolean verifyAuth(String authToken){
+    public boolean verifyAuth(String authToken) throws DataAccessException {
         return authDAO.verifyAuth(authToken);
     }
 
