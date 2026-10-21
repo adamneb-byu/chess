@@ -1,7 +1,9 @@
-package dataaccess;
+package dataaccess.sql;
 
-import data.AuthData;
 import data.UserData;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
+import dataaccess.UserDAO;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.PreparedStatement;
@@ -9,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DatabaseUserDAO implements UserDAO{
+public class DatabaseUserDAO implements UserDAO {
     public DatabaseUserDAO() throws DataAccessException {
         DatabaseManager.configureDatabase(createUserTable);
     }

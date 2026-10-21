@@ -3,6 +3,7 @@ package service;
 import data.AuthData;
 import data.UserData;
 import dataaccess.*;
+import dataaccess.sql.DatabaseAuthDAO;
 import handler.LoginRequest;
 
 import java.util.ArrayList;

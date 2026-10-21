@@ -3,9 +3,8 @@ package service;
 import data.GameData;
 import data.GameDataPublic;
 import dataaccess.*;
+import dataaccess.sql.DatabaseGameDAO;
 import handler.AlreadyTakenException;
-import handler.GameCreateResult;
-import handler.GeneralHandler;
 import handler.JoinRequest;
 
 public class GameService {

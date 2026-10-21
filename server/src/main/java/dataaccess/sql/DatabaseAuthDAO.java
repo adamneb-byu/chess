@@ -1,8 +1,9 @@
-package dataaccess;
+package dataaccess.sql;
 
-import com.google.gson.Gson;
 import data.AuthData;
-import io.javalin.http.NotAcceptableResponse;
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import service.NotFoundException;
 
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class DatabaseAuthDAO implements AuthDAO{
+public class DatabaseAuthDAO implements AuthDAO {
     public DatabaseAuthDAO() throws DataAccessException {
         DatabaseManager.configureDatabase(createAuthTable);
     }

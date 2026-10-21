@@ -1,9 +1,8 @@
 package dataaccess;
 
 import com.google.gson.Gson;
-import data.AuthData;
 import data.UserData;
-import handler.GeneralHandler;
+import dataaccess.sql.DatabaseUserDAO;
 import handler.LoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

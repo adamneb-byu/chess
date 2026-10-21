@@ -1,7 +1,7 @@
 package dataaccess;
 
 import com.google.gson.Gson;
-import data.AuthData;
+import dataaccess.sql.DatabaseGameDAO;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;

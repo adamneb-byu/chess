@@ -2,6 +2,7 @@ package service;
 
 import data.UserData;
 import dataaccess.*;
+import dataaccess.sql.DatabaseUserDAO;
 import handler.AlreadyTakenException;
 import handler.LoginRequest;
 import org.mindrot.jbcrypt.BCrypt;

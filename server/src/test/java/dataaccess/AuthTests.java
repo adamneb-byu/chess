@@ -2,13 +2,11 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import data.AuthData;
-import data.UserData;
-import dataaccess.DataAccessException;
+import dataaccess.sql.DatabaseAuthDAO;
 import handler.GeneralHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import server.Server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
