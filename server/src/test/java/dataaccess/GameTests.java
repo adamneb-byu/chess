@@ -9,6 +9,7 @@ import handler.JoinRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,12 +56,14 @@ public class GameTests {
         var whiteReq = new JoinRequest("white", testID);
         var blackReq = new JoinRequest("black", testID);
         var invalidReq = new JoinRequest("gray", testID);
+        var invalidReq2 = new JoinRequest("white", 13);
         dao.addUser(whiteReq,"test-user-w");
         dao.addUser(blackReq,"test-user-b");
         assertEquals("test-user-w",dao.getGame(testID).whiteUsername());
         assertEquals("test-user-b",dao.getGame(testID).blackUsername());
         assertThrows(BadInputException.class, () -> dao.addUser(invalidReq, "test-user-g"));
         assertThrows(AlreadyTakenException.class, () -> dao.addUser(whiteReq, "test-user-w2"));
+        assertThrows(NotFoundException.class, () -> dao.addUser(invalidReq2,"test-user-l"));
     }
 
     @Test

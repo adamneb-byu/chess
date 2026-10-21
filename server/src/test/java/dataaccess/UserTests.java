@@ -56,4 +56,10 @@ public class UserTests {
         assertDoesNotThrow(() -> service.verifyPassword(goodRequest), "Verification error");
         assertThrows(IncorrectPasswordException.class, () -> service.verifyPassword(badRequest));
     }
+
+    @Test
+    @DisplayName("Get user that doesn't exist")
+    public void getUserNull() throws DataAccessException {
+        assertNull(dao.getUser("nonexistent"));
+    }
 }
