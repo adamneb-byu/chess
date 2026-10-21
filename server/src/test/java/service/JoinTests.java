@@ -6,6 +6,7 @@ import data.GameData;
 import data.UserData;
 import dataaccess.DataAccessException;
 import handler.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JoinTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
+
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
 
     @Test
     @DisplayName("Join a game")
@@ -32,7 +38,7 @@ public class JoinTests {
 
     @Test
     @DisplayName("Cannot join a game without a valid authToken")
-    public void invalidAuthToken(){
+    public void invalidAuthToken() throws DataAccessException {
         var user1 = new UserData("flowery","jarona","flowersblooms@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
@@ -46,7 +52,7 @@ public class JoinTests {
 
     @Test
     @DisplayName("Cannot join a game with a taken color")
-    public void colorTaken(){
+    public void colorTaken() throws DataAccessException {
         var user1 = new UserData("flowery","jarona","flowersblooms@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
@@ -64,7 +70,7 @@ public class JoinTests {
 
     @Test
     @DisplayName("Cannot join a game with bad input")
-    public void badInput(){
+    public void badInput() throws DataAccessException {
         var user1 = new UserData("burghley", "gamer9999", "bluebirdgamez@delta.rune");
         var jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1,AuthData.class);

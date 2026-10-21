@@ -4,9 +4,11 @@ import com.google.gson.Gson;
 import data.AuthData;
 import data.UserData;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import handler.BadInputException;
 import handler.GeneralHandler;
 import handler.LoginRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +21,14 @@ public class LoginTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
 
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
+
     @Test
     @DisplayName("Login to an existing account")
-    public void loginTest(){
+    public void loginTest() throws DataAccessException {
         var data1 = new UserData("ralsei","ihateflowery","prince.ralsei@delta.rune");
         String data2 = handler.register(serializer.toJson(data1));
         var data3 = new LoginRequest("ralsei", "ihateflowery");
@@ -42,7 +49,7 @@ public class LoginTests {
 
     @Test
     @DisplayName("Cannot log in to an account with the wrong password")
-    public void wrongPassword(){
+    public void wrongPassword() throws DataAccessException {
         var data1 = new UserData("mike", "meow", "pluey@delta.rune");
         handler.register(serializer.toJson(data1));
         assertThrows(IncorrectPasswordException.class,() -> {
@@ -53,7 +60,7 @@ public class LoginTests {
 
     @Test
     @DisplayName("Cannot log in to an account with the wrong input json")
-    public void badInput(){
+    public void badInput() throws DataAccessException {
         var data1 = new UserData("burghley", "gamer9999", "bluebirdgamez@delta.rune");
         handler.register(serializer.toJson(data1));
         assertThrows(BadInputException.class,() -> {

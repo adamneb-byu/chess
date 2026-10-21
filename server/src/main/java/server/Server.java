@@ -42,6 +42,8 @@ public class Server {
             context.status(400).result("{\"message\": \"Error: bad request\"}");
         }catch(AlreadyTakenException e){
             context.status(403).result("{\"message\": \"Error: already taken\"}");
+        }catch(DataAccessException e){
+            context.status(500).result("{\"message\": \"Error: data access exception\"}");
         }
     }
 
@@ -55,6 +57,8 @@ public class Server {
             context.status(403).result("{\"message\": \"Error: already taken\"}");
         }catch (UnauthorizedException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }catch(DataAccessException e){
+            context.status(500).result("{\"message\": \"Error: data access exception\"}");
         }
     }
 
@@ -63,6 +67,8 @@ public class Server {
             context.result(handler.listGames(context.header(Header.AUTHORIZATION)));
         }catch(UnauthorizedException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }catch(DataAccessException e){
+            context.status(500).result("{\"message\": \"Error: data access exception\"}");
         }
     }
 
@@ -71,6 +77,8 @@ public class Server {
             handler.logout(context.header(Header.AUTHORIZATION));
         }catch(NotFoundException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }catch(DataAccessException e){
+            context.status(500).result("{\"message\": \"Error: data access exception\"}");
         }
     }
 
@@ -86,7 +94,7 @@ public class Server {
         }catch(IncorrectPasswordException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
         }catch(DataAccessException e){
-            context.status(500);
+            context.status(500).result("{\"message\": \"Error: data access exception\"}");
         }
     }
 
@@ -100,6 +108,8 @@ public class Server {
         }catch(AlreadyTakenException e){
             context.status(403);
             context.result("{\"message\": \"Error: username already taken\"}");
+        }catch(DataAccessException e){
+            context.status(500).result("{\"message\": \"Error: data access exception\"}");
         }
     }
 
@@ -108,7 +118,7 @@ public class Server {
            handler.clear();
            context.status(200);
        } catch (Exception e) {
-           context.status(500);
+           context.status(500).result("{\"message\": \"Error: data access exception\"}");
        }
     }
 

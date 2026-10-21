@@ -7,6 +7,7 @@ import dataaccess.DataAccessException;
 import handler.BadInputException;
 import handler.GeneralHandler;
 import handler.LoginRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class LogoutTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
+
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
 
     @Test
     @DisplayName("Log out of an account")

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import data.UserData;
 import dataaccess.DataAccessException;
 import handler.GeneralHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import server.Server;
@@ -13,6 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ClearTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
+
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
 
     @Test
     @DisplayName("Clearing an empty database does nothing")

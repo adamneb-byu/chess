@@ -5,10 +5,12 @@ import data.AuthData;
 import data.GameData;
 import data.GameDataPublic;
 import data.UserData;
+import dataaccess.DataAccessException;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GameName;
 import handler.GeneralHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +22,14 @@ public class ListTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
 
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
+
     @Test
     @DisplayName("List when no games exist")
-    public void listNone(){
+    public void listNone() throws DataAccessException {
         var user1 = new UserData("ralsei","ihateflowery","prince.ralsei@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
@@ -33,7 +40,7 @@ public class ListTests {
 
     @Test
     @DisplayName("List when one game exists")
-    public void listOneGame(){
+    public void listOneGame() throws DataAccessException {
         var user1 = new UserData("ralsei","ihateflowery","prince.ralsei@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);

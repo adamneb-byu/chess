@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import data.AuthData;
 import data.GameData;
 import data.UserData;
+import dataaccess.DataAccessException;
 import handler.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +18,14 @@ public class CreateTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
 
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
+
     @Test
     @DisplayName("Create a game with a new account")
-    public void createTest(){
+    public void createTest() throws DataAccessException {
         var user1 = new UserData("ralsei","ihateflowery","prince.ralsei@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
@@ -37,7 +44,7 @@ public class CreateTests {
 
     @Test
     @DisplayName("Cannot create two games with the same name")
-    public void nameTaken(){
+    public void nameTaken() throws DataAccessException {
         var user1 = new UserData("queen","ooooohohohoho","cyberqueen76@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);
@@ -50,7 +57,7 @@ public class CreateTests {
 
     @Test
     @DisplayName("Cannot create a game with bad input")
-    public void badInput(){
+    public void badInput() throws DataAccessException {
         var user1 = new UserData("burghley", "gamer9999", "bluebirdgamez@delta.rune");
         var jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1,AuthData.class);

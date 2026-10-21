@@ -6,6 +6,7 @@ import dataaccess.DataAccessException;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import server.Server;
@@ -17,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RegisterTests {
     private final GeneralHandler handler = new GeneralHandler();
     private final Gson serializer = new Gson();
+
+    @BeforeEach
+    public void clear() throws DataAccessException {
+        handler.clear();
+    }
 
     @Test
     @DisplayName("Registering different users works as intended")
