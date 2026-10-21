@@ -30,12 +30,12 @@ public class DatabaseGameDAO implements GameDAO{
     public int createGame(String gameName) throws DataAccessException {
         var game = new ChessGame();
         var gameJson = serializer.toJson(game);
-        String statement = "INSERT INTO game (gameName, chessGame) VALUES ('" +
-                gameName + "', '" + gameJson + "')";
+        String statement = "INSERT INTO game (gameName, chessGame) VALUES (\"" +
+                gameName + "\", '" + gameJson + "')";
         DatabaseManager.executeStatement(statement);
         try(var conn = DatabaseManager.getConnection()){
-            statement = "SELECT gameID FROM game WHERE gameName='" +
-                    gameName + "'";
+            statement = "SELECT gameID FROM game WHERE gameName=\"" +
+                    gameName + "\"";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -95,9 +95,9 @@ public class DatabaseGameDAO implements GameDAO{
         }
 
         if(request.playerColor().equalsIgnoreCase("white")){
-           DatabaseManager.executeStatement("UPDATE game SET whiteUsername = '" + username + "' WHERE gameID = " + request.gameID());
+           DatabaseManager.executeStatement("UPDATE game SET whiteUsername = \"" + username + "\" WHERE gameID = " + request.gameID());
         }else if(request.playerColor().equalsIgnoreCase("black")){
-            DatabaseManager.executeStatement("UPDATE game SET blackUsername = '" + username + "' WHERE gameID = " + request.gameID());
+            DatabaseManager.executeStatement("UPDATE game SET blackUsername = \"" + username + "\" WHERE gameID = " + request.gameID());
         }else{
             throw new BadInputException("Error: invalid color");
         }
@@ -106,8 +106,8 @@ public class DatabaseGameDAO implements GameDAO{
     @Override
     public boolean gameExists(String gameName) throws DataAccessException {
         try(var conn = DatabaseManager.getConnection()){
-            var statement = "SELECT gameID FROM game WHERE gameName='" +
-                    gameName + "'";
+            var statement = "SELECT gameID FROM game WHERE gameName=\"" +
+                    gameName + "\"";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -122,8 +122,18 @@ public class DatabaseGameDAO implements GameDAO{
     }
 
     @Override
-    public GameDataPublic[] getGameList() {
-        return new GameDataPublic[0];
+    public GameDataPublic[] getGameList() throws DataAccessException {
+        var data = listGames();
+        GameDataPublic[] list = new GameDataPublic[data.size()];
+        int counter = 0;
+        for(GameData game : data){
+            list[counter] = new GameDataPublic(
+                    game.gameID(), game.whiteUsername(),
+                    game.blackUsername(),game.gameName()
+            );
+            counter++;
+        }
+        return list;
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {

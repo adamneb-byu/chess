@@ -117,7 +117,7 @@ public class GeneralHandler {
     public ArrayList<AuthData> listAuth() throws DataAccessException {
         return authService.listAuth();
     }
-    public GameData getGame(int gameID){
+    public GameData getGame(int gameID) throws DataAccessException {
         return gameService.getGame(gameID);
     }
 }

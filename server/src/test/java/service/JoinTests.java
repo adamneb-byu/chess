@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import data.AuthData;
 import data.GameData;
 import data.UserData;
+import dataaccess.DataAccessException;
 import handler.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class JoinTests {
 
     @Test
     @DisplayName("Join a game")
-    public void joinTest(){
+    public void joinTest() throws DataAccessException {
         var user1 = new UserData("ralsei","ihateflowery","prince.ralsei@delta.rune");
         String jsonUser1 = handler.register(serializer.toJson(user1));
         var authUser1 = serializer.fromJson(jsonUser1, AuthData.class);

@@ -13,5 +13,5 @@ public interface GameDAO {
     ArrayList<GameData> listGames() throws DataAccessException;
     void addUser(JoinRequest request, String username) throws DataAccessException;
     boolean gameExists(String gameName) throws DataAccessException;
-    GameDataPublic[] getGameList();
+    GameDataPublic[] getGameList() throws DataAccessException;
 }
