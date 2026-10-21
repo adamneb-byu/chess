@@ -32,7 +32,7 @@ public class GeneralHandler {
             gameService.clear();
             userService.clear();
         }catch(Exception e){
-            throw new DataAccessException("Error: " + e.getMessage());
+            throw new RuntimeException("Error: problem detected! " + e.getMessage());
         }
     }
 
@@ -52,7 +52,7 @@ public class GeneralHandler {
         }
     }
 
-    public String login(String request) throws BadInputException{
+    public String login(String request) throws BadInputException, DataAccessException {
         try {
             var loginRequest = serializer.fromJson(request, LoginRequest.class);
             if(!JsonValidator.validateLoginData(loginRequest)){
@@ -61,7 +61,7 @@ public class GeneralHandler {
             userService.verifyPassword(loginRequest);
             var data = authService.loginAuth(loginRequest);
             return serializer.toJson(data);
-        } catch (JsonSyntaxException | DataAccessException e) {
+        } catch (JsonSyntaxException e) {
             throw new BadInputException("Error: Invalid Json input");
         }
     }
@@ -96,7 +96,7 @@ public class GeneralHandler {
                 throw new UnauthorizedException("Error: invalid authToken");
             }
         }catch(DataAccessException e){
-            throw new RuntimeException("Error: " + e.getMessage());
+            throw new RuntimeException("Error in data access: " + e.getMessage());
         }
     }
 

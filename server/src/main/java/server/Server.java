@@ -85,6 +85,8 @@ public class Server {
             context.status(401).result("{\"message\": \"Error: user not found\"}");
         }catch(IncorrectPasswordException e){
             context.status(401).result("{\"message\": \"Error: unauthorized\"}");
+        }catch(DataAccessException e){
+            context.status(500);
         }
     }
 

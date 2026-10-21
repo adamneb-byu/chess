@@ -25,7 +25,7 @@ public class DatabaseManager {
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to create database", ex);
+            throw new DataAccessException("Error: failed to create database", ex);
         }
     }
 
@@ -48,20 +48,20 @@ public class DatabaseManager {
             conn.setCatalog(databaseName);
             return conn;
         } catch (SQLException ex) {
-            throw new DataAccessException("failed to get connection", ex);
+            throw new DataAccessException("Error: failed to get connection", ex);
         }
     }
 
     private static void loadPropertiesFromResources() {
         try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
             if (propStream == null) {
-                throw new Exception("Unable to load db.properties");
+                throw new Exception("Error: Unable to load db.properties");
             }
             Properties props = new Properties();
             props.load(propStream);
             loadProperties(props);
         } catch (Exception ex) {
-            throw new RuntimeException("unable to process db.properties", ex);
+            throw new RuntimeException("Error: unable to process db.properties", ex);
         }
     }
 
@@ -81,7 +81,7 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
         }catch(Exception e){
-            throw new DataAccessException("Unable to execute statement: " + e.getMessage());
+            throw new DataAccessException("Error: Unable to execute statement: " + e.getMessage());
         }
     }
 
@@ -94,7 +94,7 @@ public class DatabaseManager {
                 }
             }
         } catch (Exception e) {
-            throw new DataAccessException("Unable to configure database:" + e.getMessage());
+            throw new DataAccessException("Error: Unable to configure database:" + e.getMessage());
         }
     }
 }
