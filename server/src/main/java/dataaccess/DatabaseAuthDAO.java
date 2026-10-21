@@ -48,10 +48,14 @@ public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public void deleteAuth(String authToken) {
         try {
+            var auth = getAuth(authToken);
+            if(auth == null){
+                throw new NotFoundException("Not found");
+            }
             String statement = "DELETE FROM auth WHERE authToken='" + authToken + "'";
             DatabaseManager.executeStatement(statement);
         }catch(DataAccessException e){
-            throw new NotFoundException("Error: authToken not found");
+            throw new RuntimeException("Error: authToken not found");
         }
     }
 

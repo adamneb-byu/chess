@@ -27,9 +27,13 @@ public class GeneralHandler {
     }
 
     public void clear() throws DataAccessException {
-        authService.clear();
-        gameService.clear();
-        userService.clear();
+        try {
+            authService.clear();
+            gameService.clear();
+            userService.clear();
+        }catch(Exception e){
+            throw new DataAccessException("Error: " + e.getMessage());
+        }
     }
 
     public String register(String request) throws BadInputException{
@@ -41,8 +45,10 @@ public class GeneralHandler {
             userService.register(regRequest);
             AuthData data = authService.registerAuth(regRequest);
             return serializer.toJson(data);
-        } catch (JsonSyntaxException | DataAccessException e) {
+        } catch (JsonSyntaxException e) {
             throw new BadInputException("Error: Invalid Json input");
+        }catch(DataAccessException e){
+            throw new RuntimeException("Error: Data access failure");
         }
     }
 
@@ -77,7 +83,7 @@ public class GeneralHandler {
                 throw new UnauthorizedException("Error: invalid authToken");
             }
         }catch(DataAccessException e){
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Error: " + e.getMessage());
         }
     }
 
@@ -90,7 +96,7 @@ public class GeneralHandler {
                 throw new UnauthorizedException("Error: invalid authToken");
             }
         }catch(DataAccessException e){
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Error: " + e.getMessage());
         }
     }
 
