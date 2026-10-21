@@ -12,19 +12,19 @@ import java.util.ArrayList;
 
 public class DatabaseAuthDAO implements AuthDAO{
     public DatabaseAuthDAO() throws DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase(createAuthTable);
     }
 
     @Override
     public void clear() throws DataAccessException {
-        executeStatement("TRUNCATE auth");
+        DatabaseManager.executeStatement("TRUNCATE auth");
     }
 
     @Override
     public void createAuth(AuthData data) throws DataAccessException {
         String statement = "INSERT INTO auth (username, authToken) VALUES ('" +
                 data.username() + "', '" + data.authToken() + "')";
-        executeStatement(statement);
+        DatabaseManager.executeStatement(statement);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DatabaseAuthDAO implements AuthDAO{
     public void deleteAuth(String authToken) {
         try {
             String statement = "DELETE FROM auth WHERE authToken='" + authToken + "'";
-            executeStatement(statement);
+            DatabaseManager.executeStatement(statement);
         }catch(DataAccessException e){
             throw new NotFoundException("Error: authToken not found");
         }
@@ -79,14 +79,10 @@ public class DatabaseAuthDAO implements AuthDAO{
         return auth != null;
     }
 
-    private void executeStatement(String statement) throws DataAccessException {
-        try(var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.executeUpdate();
-            }
-        }catch(Exception e){
-            throw new DataAccessException("Unable to execute statement: " + e.getMessage());
-        }
+    private AuthData readAuth(ResultSet rs) throws SQLException {
+        var username = rs.getString("username");
+        var token = rs.getString("authToken");
+        return new AuthData(token, username);
     }
 
     private final String[] createAuthTable = {
@@ -99,23 +95,4 @@ public class DatabaseAuthDAO implements AuthDAO{
             )
             """
     };
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try(var conn = DatabaseManager.getConnection()){
-        for(String statement : createAuthTable){
-            try(var preparedStatement = conn.prepareStatement(statement)){
-                preparedStatement.executeUpdate();
-            }
-        }
-        } catch (Exception e) {
-            throw new DataAccessException("Unable to configure database:" + e.getMessage());
-        }
-    }
-
-    private AuthData readAuth(ResultSet rs) throws SQLException {
-        var username = rs.getString("username");
-        var token = rs.getString("authToken");
-        return new AuthData(token, username);
-    }
 }

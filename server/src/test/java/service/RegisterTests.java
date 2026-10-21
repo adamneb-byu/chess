@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 import data.UserData;
+import dataaccess.DataAccessException;
 import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
@@ -19,7 +20,7 @@ public class RegisterTests {
 
     @Test
     @DisplayName("Registering different users works as intended")
-    public void registerUsers(){
+    public void registerUsers() throws DataAccessException {
         var data1 = new UserData("kris","mosseater","human123@delta.rune");
         handler.register(serializer.toJson(data1));
         var data2 = new UserData("susie","sk8board","susiezilla@delta.rune");

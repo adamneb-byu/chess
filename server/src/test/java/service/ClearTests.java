@@ -16,7 +16,7 @@ public class ClearTests {
 
     @Test
     @DisplayName("Clearing an empty database does nothing")
-    public void clearEmpty(){
+    public void clearEmpty() throws DataAccessException {
         assertEquals(0, handler.listUsers().size());
         assertDoesNotThrow(handler::clear, "DataAccessException!");
         assertEquals(0, handler.listUsers().size());
@@ -24,7 +24,7 @@ public class ClearTests {
 
     @Test
     @DisplayName("Clearing data from user database")
-    public void clearData(){
+    public void clearData() throws DataAccessException {
         var data1 = new UserData("kris","mosseater","human123@delta.rune");
         handler.register(serializer.toJson(data1));
         var data2 = new UserData("susie","sk8board","susiezilla@delta.rune");

@@ -111,7 +111,7 @@ public class GeneralHandler {
         }
     }
 
-    public ArrayList<UserData> listUsers(){
+    public ArrayList<UserData> listUsers() throws DataAccessException {
         return userService.listUsers();
     }
     public ArrayList<AuthData> listAuth() throws DataAccessException {

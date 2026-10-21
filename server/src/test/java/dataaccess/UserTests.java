@@ -33,31 +33,14 @@ public class UserTests {
     }
 
     @Test
-    @DisplayName("Get list of all AuthData")
-    public void listAuth() throws DataAccessException{
-        dao.createAuth(new AuthData("test-token-1","test-user-1"));
-        dao.createAuth(new AuthData("test-token-2","test-user-2"));
-        dao.createAuth(new AuthData("test-token-3","test-user-3"));
-        var list = dao.listAuth();
-        assertNotNull(list);
-        assertEquals("test-token-2",list.get(1).authToken());
+    @DisplayName("Get list of all user data")
+    public void listUsers() throws DataAccessException{
+        dao.createUser(new UserData("test-user-1","test-pass1","test1@email.com"));
+        dao.createUser(new UserData("test-user-2","test-pass2","test2@email.com"));
+        dao.createUser(new UserData("test-user-3","test-pass3","test3@email.com"));
+        var list = dao.listUsers();
+        assertNotEquals(0,list.size());
+        assertEquals("test2@email.com",list.get(1).email());
         assertEquals("test-user-3",list.get(2).username());
-    }
-
-    @Test
-    @DisplayName("Delete auth data")
-    public void deleteAuth() throws DataAccessException {
-        dao.createAuth(new AuthData("test-token-1","delete-me-pls"));
-        assertEquals(1,dao.listAuth().size());
-        dao.deleteAuth("test-token-1");
-        assertEquals(0,dao.listAuth().size());
-    }
-
-    @Test
-    @DisplayName("Verify AuthToken")
-    public void verifyAuth() throws DataAccessException{
-        dao.createAuth(new AuthData("test-token-1","verify-me-pls"));
-        assertTrue(dao.verifyAuth("test-token-1"));
-        assertFalse(dao.verifyAuth("test-token-2"));
     }
 }

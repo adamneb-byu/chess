@@ -74,4 +74,27 @@ public class DatabaseManager {
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
+
+    static public void executeStatement(String statement) throws DataAccessException {
+        try(var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        }catch(Exception e){
+            throw new DataAccessException("Unable to execute statement: " + e.getMessage());
+        }
+    }
+
+    static public void configureDatabase(String[] configStatements) throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try(var conn = DatabaseManager.getConnection()){
+            for(String statement : configStatements){
+                try(var preparedStatement = conn.prepareStatement(statement)){
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException("Unable to configure database:" + e.getMessage());
+        }
+    }
 }
