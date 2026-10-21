@@ -70,4 +70,13 @@ public class GameTests {
         assertTrue(dao.gameExists("TestGame1"));
         assertFalse(dao.gameExists("TestGame2"));
     }
+
+    @Test
+    @DisplayName("Get list of games (hidden data included)")
+    public void trueGameList() throws DataAccessException {
+        dao.createGame("Test Game 1");
+        dao.createGame("Test Game 2");
+        var list = dao.getGameList();
+        assertEquals(2, list.length);
+    }
 }
