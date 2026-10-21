@@ -84,8 +84,7 @@ public class MemoryGameDAO implements GameDAO{
         data.add(newGame);
     }
 
-    @Override
-    public int newGameID(){
+    private int newGameID(){
         currentID++;
         return currentID;
     }

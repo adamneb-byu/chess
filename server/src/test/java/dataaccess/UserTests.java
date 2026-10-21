@@ -29,7 +29,8 @@ public class UserTests {
     @Test
     @DisplayName("Add to a database")
     public void addUser() throws DataAccessException {
-        assertDoesNotThrow(() -> dao.createUser(new UserData("test-user-1","test-pass","test@email.com")),
+        var newUser = new UserData("test-user-1","test-pass","test@email.com");
+        assertDoesNotThrow(() -> dao.createUser(newUser),
                 "DataAccessException!");
         assertNotNull(dao.getUser("test-user-1"));
         assertEquals("test-user-1", dao.getUser("test-user-1").username());
