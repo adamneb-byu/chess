@@ -9,9 +9,9 @@ import java.util.ArrayList;
 public interface GameDAO {
     void clear() throws DataAccessException;
     int createGame(String gameName) throws DataAccessException;
-    GameData getGame(int gameID);
-    ArrayList<GameData> listGames();
-    void addUser(JoinRequest request, String username);
-    boolean gameExists(String gameName);
+    GameData getGame(int gameID) throws DataAccessException;
+    ArrayList<GameData> listGames() throws DataAccessException;
+    void addUser(JoinRequest request, String username) throws DataAccessException;
+    boolean gameExists(String gameName) throws DataAccessException;
     GameDataPublic[] getGameList();
 }

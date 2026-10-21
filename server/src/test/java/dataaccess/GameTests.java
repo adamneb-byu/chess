@@ -2,6 +2,7 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import data.AuthData;
+import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
 import handler.JoinRequest;
@@ -13,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTests {
     private final GeneralHandler handler = new GeneralHandler();
-    //private final DatabaseGameDAO dao = new DatabaseGameDAO();
-    private final MemoryGameDAO dao = new MemoryGameDAO();
+    private final DatabaseGameDAO dao = new DatabaseGameDAO();
+    //private final MemoryGameDAO dao = new MemoryGameDAO();
     private final Gson serializer = new Gson();
 
     public GameTests() throws DataAccessException {
@@ -59,6 +60,7 @@ public class GameTests {
         assertEquals("test-user-w",dao.getGame(testID).whiteUsername());
         assertEquals("test-user-b",dao.getGame(testID).blackUsername());
         assertThrows(BadInputException.class, () -> dao.addUser(invalidReq, "test-user-g"));
+        assertThrows(AlreadyTakenException.class, () -> dao.addUser(whiteReq, "test-user-w2"));
     }
 
     @Test
