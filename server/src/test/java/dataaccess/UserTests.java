@@ -4,14 +4,17 @@ import com.google.gson.Gson;
 import data.AuthData;
 import data.UserData;
 import handler.GeneralHandler;
+import handler.LoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.IncorrectPasswordException;
+import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserTests {
-    private final GeneralHandler handler = new GeneralHandler();
+    private final UserService service = new UserService();
     private final DatabaseUserDAO dao = new DatabaseUserDAO();
     private final Gson serializer = new Gson();
 
@@ -42,5 +45,15 @@ public class UserTests {
         assertNotEquals(0,list.size());
         assertEquals("test2@email.com",list.get(1).email());
         assertEquals("test-user-3",list.get(2).username());
+    }
+
+    @Test
+    @DisplayName("Verify a password")
+    public void verifyPass() throws DataAccessException{
+        dao.createUser(new UserData("test-user-1", "test-pass1", "test1@email.com"));
+        var goodRequest = new LoginRequest("test-user-1","test-pass1");
+        var badRequest = new LoginRequest("test-user-1","mwehehehImHACKER");
+        assertDoesNotThrow(() -> service.verifyPassword(goodRequest), "Verification error");
+        assertThrows(IncorrectPasswordException.class, () -> service.verifyPassword(badRequest));
     }
 }

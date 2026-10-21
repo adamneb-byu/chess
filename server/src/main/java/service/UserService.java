@@ -1,19 +1,22 @@
 package service;
 
 import data.UserData;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import handler.AlreadyTakenException;
 import handler.LoginRequest;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 
 public class UserService {
     private final UserDAO userDAO;
 
-    public UserService(){
-        userDAO = new MemoryUserDAO();
+    public UserService() {
+        try {
+            userDAO = new DatabaseUserDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void clear() throws DataAccessException {
@@ -32,7 +35,8 @@ public class UserService {
         var data = userDAO.getUser(request.username());
         if(data == null){
             throw new NotFoundException("Error: user not found");
-        }else if(!data.password().equals(request.password())){
+        //}else if(!data.password().equals(request.password())){
+        }else if(!BCrypt.checkpw(request.password(), data.password())){
             throw new IncorrectPasswordException("Error: incorrect password");
         }
     }
