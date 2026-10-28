@@ -8,12 +8,51 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class ServerFacade {
     String serverUrl;
+    String authToken;
 
-    public ServerFacade(){
+    public ServerFacade(String url){
+        serverUrl = url;
+    }
 
+    public void clear(){
+        makeRequest("DELETE","/db", null, String.class);
+    }
+
+    public void register(String name, String password, String email){
+        var request = Map.of("username", name, "password", password, "email", email);
+        var result = makeRequest("POST","/user",request,String.class);
+        authToken = result;
+    }
+
+    public void login(String name, String password){
+        var request = Map.of("username", name, "password", password);
+        var result = makeRequest("POST","/session",request,String.class);
+        authToken = result;
+    }
+
+    public void logout(){
+        var request = Map.of("authToken", authToken);
+        makeRequest("POST","/session",request,String.class);
+        authToken = "";
+    }
+
+    public void listGames(){
+        var request = Map.of("authToken",authToken);
+        var result = makeRequest("GET","/game",request,String.class);
+    }
+
+    public void createGame(String name){
+        var request = Map.of("gameName", name);
+        var result = makeRequest("POST","/session",request,String.class);
+    }
+
+    public void join(String color, int gameID){
+        var request = Map.of("playerColor", color, "gameID", gameID);
+        var result = makeRequest("POST","/session",request,String.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass){
