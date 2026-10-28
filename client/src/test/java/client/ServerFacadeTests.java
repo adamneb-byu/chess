@@ -20,6 +20,11 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @BeforeEach
+    public void clearBeforeAll(){
+
+    }
+
 
     @Test
     public void sampleTest() {
