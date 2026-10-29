@@ -3,11 +3,12 @@ package client;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class ServerFacade {
@@ -20,39 +21,41 @@ public class ServerFacade {
 
     public void clear(){
         makeRequest("DELETE","/db", null, String.class);
+        authToken = "";
     }
 
     public void register(String name, String password, String email){
         var request = Map.of("username", name, "password", password, "email", email);
-        var result = makeRequest("POST","/user",request,String.class);
-        authToken = result;
+        var result = makeRequest("POST","/user",request,Map.class);
+        authToken = result.get("authToken").toString();
     }
 
     public void login(String name, String password){
         var request = Map.of("username", name, "password", password);
-        var result = makeRequest("POST","/session",request,String.class);
-        authToken = result;
+        var result = makeRequest("POST","/session",request,Map.class);
+        authToken = result.get("authToken").toString();
     }
 
     public void logout(){
         var request = Map.of("authToken", authToken);
-        makeRequest("POST","/session",request,String.class);
+        makeRequest("DELETE","/session",request,Map.class);
         authToken = "";
     }
 
-    public void listGames(){
+    public Map listGames(){
         var request = Map.of("authToken",authToken);
-        var result = makeRequest("GET","/game",request,String.class);
+        return makeRequest("GET","/game",request,Map.class);
     }
 
-    public void createGame(String name){
+    public int createGame(String name){
         var request = Map.of("gameName", name);
         var result = makeRequest("POST","/session",request,String.class);
+        return Integer.parseInt(result);
     }
 
     public void join(String color, int gameID){
         var request = Map.of("playerColor", color, "gameID", gameID);
-        var result = makeRequest("POST","/session",request,String.class);
+        var result = makeRequest("POST","/session",request,Map.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass){
@@ -61,6 +64,7 @@ public class ServerFacade {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.setRequestProperty("Authorization",authToken);
 
             writeBody(request, http);
             http.connect();
@@ -81,12 +85,23 @@ public class ServerFacade {
         }
     }
 
-    private static void throwIfNotSuccessful(HttpURLConnection http){
-
+    private static void throwIfNotSuccessful(HttpURLConnection http) throws IOException {
+        var status = http.getResponseCode();
+        if(status - 200 > 99){
+            throw new RuntimeException();
+        }
     }
 
-    private <T> T readBody(HttpURLConnection http, Class<T> responseClass){
-
-        return null;
+    private <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        T response = null;
+        if(http.getContentLength() > 0){
+            try(InputStream responseBody = http.getInputStream()){
+                InputStreamReader inReader = new InputStreamReader(responseBody);
+                if(responseClass != null){
+                    response = new Gson().fromJson(inReader, responseClass);
+                }
+            }
+        }
+        return response;
     }
 }
