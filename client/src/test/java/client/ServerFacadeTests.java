@@ -6,6 +6,7 @@ import handler.GeneralHandler;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,16 +81,21 @@ public class ServerFacadeTests {
         facade.register("TestUser","mypass","user@email.com");
         facade.createGame("Test Game");
         var list = facade.listGames();
-        assertEquals(1,list.size());
+        ArrayList arr = (ArrayList) list.get("games");
+        assertEquals(1,arr.size());
         facade.createGame("Test Game 2");
         list = facade.listGames();
-        assertEquals(2,list.size());
+        arr = (ArrayList) list.get("games");
+        assertEquals(2,arr.size());
         facade.createGame("Test Game 3");
         list = facade.listGames();
-        assertEquals(3,list.size());
+        arr = (ArrayList) list.get("games");
+        assertEquals(3,arr.size());
         facade.clear();
+        facade.register("TestUser","mypass","user@email.com");
         list = facade.listGames();
-        assertEquals(0,list.size());
+        arr = (ArrayList) list.get("games");
+        assertEquals(0,arr.size());
     }
 
     @Test

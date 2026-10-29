@@ -44,18 +44,20 @@ public class ServerFacade {
 
     public Map listGames(){
         var request = Map.of("authToken",authToken);
-        return makeRequest("GET","/game",request,Map.class);
+        return makeRequest("GET","/game",null,Map.class);
     }
 
     public int createGame(String name){
         var request = Map.of("gameName", name);
-        var result = makeRequest("POST","/session",request,String.class);
-        return Integer.parseInt(result);
+        var result = makeRequest("POST","/game",request,Map.class);
+        // makeRequest returns a decimal like '1.0', so first int must be extracted
+        String idString = result.get("gameID").toString();
+        return Integer.parseInt(idString.split("\\.")[0]);
     }
 
     public void join(String color, int gameID){
         var request = Map.of("playerColor", color, "gameID", gameID);
-        var result = makeRequest("POST","/session",request,Map.class);
+        var result = makeRequest("PUT","/game",request,Map.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass){
