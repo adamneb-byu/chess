@@ -10,11 +10,11 @@ public class ClientDrawer {
     public static void drawBoard(ChessBoard board, String color){
         boolean whiteSquare = true;
         char[] letters = {'a','b','c','d','e','f','g','h'};
-        int[] numbers = {8,7,6,5,4,3,2,1};
+        char[] numbers = {'8','7','6','5','4','3','2','1'};
         if(color.equalsIgnoreCase("black")){
             whiteSquare = false;
             letters = new char[]{'h','g','f','e','d','c','b','a'};
-            numbers = new int[]{1,2,3,4,5,6,7,8};
+            numbers = new char[]{1,2,3,4,5,6,7,8};
         }
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
@@ -24,17 +24,9 @@ public class ClientDrawer {
                     whiteSquare = !whiteSquare;
                 }
                 if(i == 0 || i == 9){
-                    System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                    System.out.print(EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
-                    if(j > 0 && j < 9){
-                        System.out.print(" " + letters[j - 1] + " ");
-                    }else {
-                        System.out.print("   ");
-                    }
+                    drawBorderSquare(j, letters);
                 }else if(j == 0 || j == 9){
-                    System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                    System.out.print(EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
-                    System.out.print(" " + numbers[i - 1] + " ");
+                    drawBorderSquare(i,numbers);
                 }else{
                     ChessPiece piece;
                     if(color.equalsIgnoreCase("white")){
@@ -48,12 +40,7 @@ public class ClientDrawer {
                         System.out.print(EscapeSequences.SET_BG_COLOR_BLUE);
                     }
                     if(piece != null){
-                        if(piece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                            System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
-                        }else{
-                            System.out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
-                        }
-                        System.out.print(" " + piece.getCharRepresentation() + " ");
+                        drawPiece(piece);
                     }else {
                         System.out.print("   ");
                     }
@@ -61,5 +48,24 @@ public class ClientDrawer {
                 }
             }
         }
+    }
+
+    private static void drawBorderSquare(int pos, char[] letters){
+        System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
+        if(pos > 0 && pos < 9){
+            System.out.print(" " + letters[pos - 1] + " ");
+        }else {
+            System.out.print("   ");
+        }
+    }
+
+    private static void drawPiece(ChessPiece piece){
+        if(piece.getTeamColor() == ChessGame.TeamColor.WHITE){
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+        }else{
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_BLACK);
+        }
+        System.out.print(" " + piece.getCharRepresentation() + " ");
     }
 }
