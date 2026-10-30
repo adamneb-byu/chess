@@ -48,6 +48,7 @@ public class ClientDrawer {
                 }
             }
         }
+        System.out.println(EscapeSequences.RESET_BG_COLOR + EscapeSequences.RESET_TEXT_COLOR);
     }
 
     private static void drawBorderSquare(int pos, char[] letters){

@@ -2,9 +2,11 @@ package client;
 
 import chess.*;
 
+import java.util.Scanner;
+
 public class ClientMain {
-    private ServerFacade facade;
     private boolean gameState;
+    private static REPL repl;
 
     private enum GameStates{
         LOGGED_IN,
@@ -18,5 +20,10 @@ public class ClientMain {
         var board = new ChessBoard();
         board.resetBoard();
         ClientDrawer.drawBoard(board,"white");
+        repl = new prelogREPL();
     }
+
+
+
+
 }
