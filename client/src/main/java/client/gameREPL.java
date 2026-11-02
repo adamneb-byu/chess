@@ -52,7 +52,8 @@ public class gameREPL extends REPL {
             Map game = (Map) gameObject;
             Integer id = ((Double) game.get("gameID")).intValue();
             if(id == gameID){
-                var chessGame = new Gson().fromJson((String) game.get("game"), ChessGame.class);
+                String gameJson = new Gson().toJson(game.get("game"));
+                ChessGame chessGame = new Gson().fromJson(gameJson, ChessGame.class);
                 board = chessGame.getBoard();
             }
         }

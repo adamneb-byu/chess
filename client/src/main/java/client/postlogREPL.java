@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import ui.EscapeSequences;
 
 import java.util.ArrayList;
@@ -82,9 +84,34 @@ public class postlogREPL extends REPL {
     }
 
     private void processObserve(String[] input) {
+        if(input.length != 2){
+            throw new RuntimeException("Invalid input. Try again.");
+        }
+        if(!gameExists(Integer.parseInt(input[1]))){
+            throw new RuntimeException("Invalid game ID. Try again.");
+        }
+        try{
+            parentClient.joinGame(facade, Integer.parseInt(input[1]),"OBSERVER");
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     private void processJoin(String[] input) {
+        if(input.length != 3){
+            throw new RuntimeException("Invalid input. Try again.");
+        }
+        if(!gameExists(Integer.parseInt(input[1]))){
+            throw new RuntimeException("Invalid game ID. Try again.");
+        }
+        if(!input[2].equalsIgnoreCase("white") && !input[2].equalsIgnoreCase("black")){
+            throw new RuntimeException("Invalid color. Try again.");
+        }
+        try {
+            parentClient.joinGame(facade, Integer.parseInt(input[1]), input[2]);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     private void processList() {
@@ -149,5 +176,17 @@ public class postlogREPL extends REPL {
     private void switchLogout(){
         parentClient.logout(facade);
         running = false;
+    }
+
+    private boolean gameExists(int gameID){
+        ArrayList games = (ArrayList) facade.listGames().get("games");
+        for(Object gameObject : games){
+            Map game = (Map) gameObject;
+            Integer id = ((Double) game.get("gameID")).intValue();
+            if(id == gameID){
+                return true;
+            }
+        }
+        return false;
     }
 }

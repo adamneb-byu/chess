@@ -30,4 +30,8 @@ public class ChessClient {
     public void logout(ServerFacade facade){
         repl = new prelogREPL(this, facade);
     }
+
+    public void joinGame(ServerFacade facade, int gameID, String color){
+        repl = new gameREPL(this, facade, gameID, color);
+    }
 }
