@@ -34,10 +34,7 @@ public class GameService {
     public void joinGame(JoinRequest request, String username) throws DataAccessException {
         gameDAO.addUser(request, username);
     }
-    /*
-    public GameDataPublic[] listGames() throws DataAccessException {
-        return gameDAO.getGameList();
-    }*/
+
     public ArrayList<GameData> listGames() throws DataAccessException{
         return gameDAO.listGames();
     }

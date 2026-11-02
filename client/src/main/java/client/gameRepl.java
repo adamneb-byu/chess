@@ -3,21 +3,19 @@ package client;
 import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
-import ui.EscapeSequences;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
-public class gameREPL extends REPL {
+public class gameRepl extends REPL {
     public boolean running;
     private final String color;
     private final String displayColor;
     private ChessBoard board;
     private int gameID;
 
-    public gameREPL(ChessClient parent, ServerFacade facade, int gameID, String color){
+    public gameRepl(ChessClient parent, ServerFacade facade, int gameID, String color){
         this.color = color.toUpperCase();
         this.gameID = gameID;
         if(color.equalsIgnoreCase("observer")){

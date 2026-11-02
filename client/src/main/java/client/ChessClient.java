@@ -20,18 +20,18 @@ public class ChessClient {
     }
 
     private void initializeREPL(){
-        repl = new prelogREPL(this);
+        repl = new prelogRepl(this);
     }
 
     public void login(ServerFacade facade){
-        repl = new postlogREPL(this, facade);
+        repl = new postlogRepl(this, facade);
     }
 
     public void logout(ServerFacade facade){
-        repl = new prelogREPL(this, facade);
+        repl = new prelogRepl(this, facade);
     }
 
     public void joinGame(ServerFacade facade, int gameID, String color){
-        repl = new gameREPL(this, facade, gameID, color);
+        repl = new gameRepl(this, facade, gameID, color);
     }
 }

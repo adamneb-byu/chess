@@ -1,16 +1,14 @@
 package client;
 
-import chess.ChessGame;
-import com.google.gson.Gson;
 import ui.EscapeSequences;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-public class postlogREPL extends REPL {
+public class postlogRepl extends REPL {
     public boolean running;
-    public postlogREPL(ChessClient parent, ServerFacade facade){
+    public postlogRepl(ChessClient parent, ServerFacade facade){
         parentClient = parent;
         this.facade = facade;
         running = true;
@@ -59,12 +57,12 @@ public class postlogREPL extends REPL {
                         System.out.println(e.getMessage());
                     }
                 }
-                case "help" -> {
-                    showHelp();
-                }
                 case "quit" -> {
                     running = false;
                     System.out.println("Until next time!");
+                }
+                case "help" -> {
+                    showHelp();
                 }
                 case null, default -> {
                     System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
