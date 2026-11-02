@@ -21,12 +21,16 @@ public class prelogREPL extends REPL {
                 case "register" -> {
                     try {
                         processRegister(processInput(input));
-                    }catch(Exception e){
+                    }catch(RuntimeException e){
                         System.out.println(e.getMessage());
                     }
                 }
                 case "login" -> {
-                    processLogin(processInput(input));
+                    try {
+                        processLogin(processInput(input));
+                    }catch(RuntimeException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "help" -> {
                     showHelp();
@@ -43,19 +47,42 @@ public class prelogREPL extends REPL {
         if(input.length != 4){
             throw new RuntimeException("Invalid input. Please try again.");
         }
-
+        try{
+            facade.register(input[1],input[2],input[3]);
+        }catch(Exception e){
+            throw new RuntimeException("Registration error. Please try again.");
+        }
+        System.out.println("Registration successful! Welcome, " + input[1] + "!");
     }
 
     private void processLogin(String[] input){
         if(input.length != 3){
             throw new RuntimeException("Invalid input. Please try again.");
         }
-
+        try{
+            facade.login(input[1],input[2]);
+        }catch(Exception e){
+            throw new RuntimeException("Invalid credentials. Please try again.");
+        }
+        System.out.println("Login successful! Welcome, " + input[1] + "!");
     }
 
     private void showHelp(){
-        System.out.println("Hmmm.... I think you should " +
-                EscapeSequences.SET_TEXT_COLOR_RED + " KILL YOUR SELF " +
-                EscapeSequences.RESET_TEXT_COLOR + " if you can't remember the inputs");
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN +
+                "register <username> <password> <email> " +
+                EscapeSequences.RESET_TEXT_COLOR +
+                "- register a new user\n" +
+                EscapeSequences.SET_TEXT_COLOR_GREEN +
+                "login <username> <password> " +
+                EscapeSequences.RESET_TEXT_COLOR +
+                "- log in to existing account\n" +
+                EscapeSequences.SET_TEXT_COLOR_GREEN +
+                "quit " +
+                EscapeSequences.RESET_TEXT_COLOR +
+                "- exit the chess client\n" +
+                EscapeSequences.SET_TEXT_COLOR_GREEN +
+                "help " +
+                EscapeSequences.RESET_TEXT_COLOR +
+                "- see possible commands. You are here!");
     }
 }

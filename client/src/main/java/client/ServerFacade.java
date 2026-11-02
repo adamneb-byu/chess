@@ -30,7 +30,7 @@ public class ServerFacade {
         authToken = result.get("authToken").toString();
     }
 
-    public void login(String name, String password){
+    public void login(String name, String password) throws RuntimeException{
         var request = Map.of("username", name, "password", password);
         var result = makeRequest("POST","/session",request,Map.class);
         authToken = result.get("authToken").toString();
@@ -60,7 +60,7 @@ public class ServerFacade {
         var result = makeRequest("PUT","/game",request,Map.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass){
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws RuntimeException{
         try{
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -90,7 +90,7 @@ public class ServerFacade {
     private static void throwIfNotSuccessful(HttpURLConnection http) throws IOException {
         var status = http.getResponseCode();
         if(status - 200 > 99){
-            throw new RuntimeException();
+            throw new RuntimeException("Error code " + status);
         }
     }
 
