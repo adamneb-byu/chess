@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import ui.EscapeSequences;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -17,12 +18,12 @@ public class gameREPL extends REPL {
     private int gameID;
 
     public gameREPL(ChessClient parent, ServerFacade facade, int gameID, String color){
-        this.color = color;
+        this.color = color.toUpperCase();
         this.gameID = gameID;
         if(color.equalsIgnoreCase("observer")){
             displayColor = "OBSERVER";
         }else{
-            displayColor = color;
+            displayColor = color.toUpperCase();
         }
         parentClient = parent;
         this.facade = facade;

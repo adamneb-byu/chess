@@ -14,7 +14,7 @@ public class ClientDrawer {
         if(color.equalsIgnoreCase("black")){
             whiteSquare = false;
             letters = new char[]{'h','g','f','e','d','c','b','a'};
-            numbers = new char[]{1,2,3,4,5,6,7,8};
+            numbers = new char[]{'1','2','3','4','5','6','7','8'};
         }
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
