@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-public class postlogRepl extends REPL {
+public class PostlogREPL extends REPL {
     public boolean running;
-    public postlogRepl(ChessClient parent, ServerFacade facade){
+    public PostlogREPL(ChessClient parent, ServerFacade facade){
         parentClient = parent;
         this.facade = facade;
         running = true;

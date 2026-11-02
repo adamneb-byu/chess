@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 
-public class gameRepl extends REPL {
+public class GameREPL extends REPL {
     public boolean running;
     private final String color;
     private final String displayColor;
     private ChessBoard board;
     private int gameID;
 
-    public gameRepl(ChessClient parent, ServerFacade facade, int gameID, String color){
+    public GameREPL(ChessClient parent, ServerFacade facade, int gameID, String color){
         this.color = color.toUpperCase();
         this.gameID = gameID;
         if(color.equalsIgnoreCase("observer")){

@@ -4,16 +4,16 @@ import ui.EscapeSequences;
 
 import java.util.Scanner;
 
-public class prelogRepl extends REPL {
+public class PrelogREPL extends REPL {
     public boolean running;
-    public prelogRepl(ChessClient parent){
+    public PrelogREPL(ChessClient parent){
         facade = new ServerFacade("http://localhost:8080");
         parentClient = parent;
         running = true;
         run();
     }
 
-    public prelogRepl(ChessClient parent, ServerFacade facade){
+    public PrelogREPL(ChessClient parent, ServerFacade facade){
         this.facade = facade;
         parentClient = parent;
         running = true;
