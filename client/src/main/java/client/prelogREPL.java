@@ -6,16 +6,27 @@ import java.util.Scanner;
 
 public class prelogREPL extends REPL {
     public boolean running;
-    public prelogREPL(){
+    public prelogREPL(ChessClient parent){
         facade = new ServerFacade("http://localhost:8080");
+        parentClient = parent;
+        running = true;
+        run();
+    }
+
+    public prelogREPL(ChessClient parent, ServerFacade facade){
+        this.facade = facade;
+        parentClient = parent;
         running = true;
         run();
     }
 
     private void run(){
+        facade.clear();
+        // DELETE THE ABOVE LINE BEFORE PASSOFF
         Scanner scanner = new Scanner(System.in);
         String input = "";
         while(running){
+            System.out.print("[LOGGED OUT] >>> ");
             input = scanner.nextLine();
             switch(processInput(input)[0]){
                 case "register" -> {
@@ -39,6 +50,9 @@ public class prelogREPL extends REPL {
                     running = false;
                     System.out.println("Until next time!");
                 }
+                case null, default -> {
+                    System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
+                }
             }
         }
     }
@@ -53,6 +67,7 @@ public class prelogREPL extends REPL {
             throw new RuntimeException("Registration error. Please try again.");
         }
         System.out.println("Registration successful! Welcome, " + input[1] + "!");
+        switchLogin();
     }
 
     private void processLogin(String[] input){
@@ -65,6 +80,12 @@ public class prelogREPL extends REPL {
             throw new RuntimeException("Invalid credentials. Please try again.");
         }
         System.out.println("Login successful! Welcome, " + input[1] + "!");
+        switchLogin();
+    }
+
+    private void switchLogin(){
+        parentClient.login(facade);
+        running = false;
     }
 
     private void showHelp(){
