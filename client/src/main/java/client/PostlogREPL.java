@@ -106,6 +106,7 @@ public class PostlogREPL extends REPL {
             throw new RuntimeException("Invalid color. Try again.");
         }
         try {
+            facade.join(input[2],Integer.parseInt(input[1]));
             parentClient.joinGame(facade, Integer.parseInt(input[1]), input[2]);
         }catch(Exception e){
             throw new RuntimeException(e);
@@ -120,7 +121,10 @@ public class PostlogREPL extends REPL {
                 Double id = (Double) game.get("gameID");
                 Integer gameID = id.intValue();
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
-                System.out.println("ID: " + gameID + "   Name: " + game.get("gameName"));
+                System.out.println("ID: " + gameID +
+                        "   Name: " + game.get("gameName") +
+                        "   White: " + game.get("whiteUsername") +
+                        "   Black: " + game.get("blackUsername"));
                 System.out.print(EscapeSequences.RESET_TEXT_COLOR);
             }
         }catch(Exception e){

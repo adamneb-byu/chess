@@ -21,8 +21,8 @@ public class PrelogREPL extends REPL {
     }
 
     private void run(){
-        facade.clear();
-        // DELETE THE ABOVE LINE BEFORE PASSOFF
+        //facade.clear();
+        // DELETE THE ABOVE LINE BEFORE PASS OFF
         Scanner scanner = new Scanner(System.in);
         String input = "";
         while(running){
