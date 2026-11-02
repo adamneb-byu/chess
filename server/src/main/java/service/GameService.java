@@ -7,6 +7,8 @@ import dataaccess.sql.DatabaseGameDAO;
 import handler.AlreadyTakenException;
 import handler.JoinRequest;
 
+import java.util.ArrayList;
+
 public class GameService {
     private final DatabaseGameDAO gameDAO;
 
@@ -32,9 +34,12 @@ public class GameService {
     public void joinGame(JoinRequest request, String username) throws DataAccessException {
         gameDAO.addUser(request, username);
     }
-
+    /*
     public GameDataPublic[] listGames() throws DataAccessException {
         return gameDAO.getGameList();
+    }*/
+    public ArrayList<GameData> listGames() throws DataAccessException{
+        return gameDAO.listGames();
     }
 
     public GameData getGame(int gameID) throws DataAccessException {

@@ -1,0 +1,60 @@
+package client;
+
+import chess.ChessBoard;
+import chess.ChessGame;
+import com.google.gson.Gson;
+import ui.EscapeSequences;
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Scanner;
+
+public class gameREPL extends REPL {
+    public boolean running;
+    private final String color;
+    private final String displayColor;
+    private ChessBoard board;
+    private int gameID;
+
+    public gameREPL(ChessClient parent, ServerFacade facade, int gameID, String color){
+        this.color = color;
+        this.gameID = gameID;
+        if(color.equalsIgnoreCase("observer")){
+            displayColor = "OBSERVER";
+        }else{
+            displayColor = color;
+        }
+        parentClient = parent;
+        this.facade = facade;
+        updateBoard();
+        running = true;
+        run();
+    }
+
+    private void run(){
+        Scanner scanner = new Scanner(System.in);
+        String input = "";
+        while(running){
+            ClientDrawer.drawBoard(board,displayColor);
+            System.out.print("[" + color + "] >>> ");
+            input = scanner.nextLine();
+            switch(processInput(input)[0]){
+                case null, default -> {
+                    System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
+                }
+            }
+        }
+    }
+
+    private void updateBoard(){
+        ArrayList games = (ArrayList) facade.listGames().get("games");
+        for(Object gameObject : games){
+            Map game = (Map) gameObject;
+            Integer id = ((Double) game.get("gameID")).intValue();
+            if(id == gameID){
+                var chessGame = new Gson().fromJson((String) game.get("game"), ChessGame.class);
+                board = chessGame.getBoard();
+            }
+        }
+    }
+}
