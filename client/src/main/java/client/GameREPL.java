@@ -15,7 +15,7 @@ public class GameREPL extends REPL {
     private ChessBoard board;
     private int gameID;
 
-    public GameREPL(ChessClient parent, ServerFacade facade, int gameID, String color){
+    public GameREPL(ChessClient parent, int gameID, String color){
         this.color = color.toUpperCase();
         this.gameID = gameID;
         if(color.equalsIgnoreCase("observer")){
@@ -24,7 +24,6 @@ public class GameREPL extends REPL {
             displayColor = color.toUpperCase();
         }
         parentClient = parent;
-        this.facade = facade;
         updateBoard();
         running = true;
         run();
@@ -39,7 +38,7 @@ public class GameREPL extends REPL {
             input = scanner.nextLine();
             switch(processInput(input)[0]){
                 case "leave" -> {
-                    parentClient.login(facade);
+                    parentClient.login(parentClient.facade);
                     running = false;
                 }
                 case null, default -> {
@@ -50,7 +49,7 @@ public class GameREPL extends REPL {
     }
 
     private void updateBoard(){
-        ArrayList games = (ArrayList) facade.listGames().get("games");
+        ArrayList games = (ArrayList) parentClient.facade.listGames().get("games");
         for(Object gameObject : games){
             Map game = (Map) gameObject;
             Integer id = ((Double) game.get("gameID")).intValue();

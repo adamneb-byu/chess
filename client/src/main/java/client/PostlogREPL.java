@@ -8,9 +8,8 @@ import java.util.Scanner;
 
 public class PostlogREPL extends REPL {
     public boolean running;
-    public PostlogREPL(ChessClient parent, ServerFacade facade){
+    public PostlogREPL(ChessClient parent){
         parentClient = parent;
-        this.facade = facade;
         running = true;
         run();
     }
@@ -69,7 +68,7 @@ public class PostlogREPL extends REPL {
 
     private void processLogout() {
         try{
-            facade.logout();
+            parentClient.facade.logout();
         }catch(Exception e){
             throw new RuntimeException("Logout error. Please try again.");
         }
@@ -86,7 +85,7 @@ public class PostlogREPL extends REPL {
         }
         try{
             int trueID = getTrueID(Integer.parseInt(input[1]));
-            parentClient.joinGame(facade, trueID,"OBSERVER");
+            parentClient.joinGame(trueID,"OBSERVER");
         }catch(Exception e){
             throw new RuntimeException(e);
         }
@@ -104,8 +103,8 @@ public class PostlogREPL extends REPL {
         }
         try {
             int trueID = getTrueID(Integer.parseInt(input[1]));
-            facade.join(input[2],trueID);
-            parentClient.joinGame(facade, trueID, input[2]);
+            parentClient.facade.join(input[2],trueID);
+            parentClient.joinGame(trueID, input[2]);
             running = false;
         }catch(Exception e){
             throw new RuntimeException("Invalid selection. Try again.");
@@ -114,7 +113,7 @@ public class PostlogREPL extends REPL {
 
     private void processList() {
         try{
-            ArrayList games = (ArrayList) facade.listGames().get("games");
+            ArrayList games = (ArrayList) parentClient.facade.listGames().get("games");
             int count = 1;
             for(Object gameObject : games){
                 Map game = (Map) gameObject;
@@ -149,7 +148,7 @@ public class PostlogREPL extends REPL {
             throw new RuntimeException("Invalid input. Please try again.");
         }
         try{
-            facade.createGame(input[1]);
+            parentClient.facade.createGame(input[1]);
         }catch(Exception e){
             throw new RuntimeException("Creation error. Please try again.");
         }
@@ -188,12 +187,12 @@ public class PostlogREPL extends REPL {
     }
 
     private void switchLogout(){
-        parentClient.logout(facade);
+        parentClient.logout(parentClient.facade);
         running = false;
     }
 
     private boolean gameExists(int gameID){
-        ArrayList games = (ArrayList) facade.listGames().get("games");
+        ArrayList games = (ArrayList) parentClient.facade.listGames().get("games");
         if(gameID < 1 || gameID > games.size()){
             return false;
         }
@@ -202,7 +201,7 @@ public class PostlogREPL extends REPL {
 
     private int getTrueID(int clientGameID){
         int count = 1;
-        ArrayList games = (ArrayList) facade.listGames().get("games");
+        ArrayList games = (ArrayList) parentClient.facade.listGames().get("games");
         for(Object gameObject : games){
             Map game = (Map) gameObject;
             Integer id = ((Double) game.get("gameID")).intValue();

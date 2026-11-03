@@ -6,6 +6,7 @@ import chess.ChessPiece;
 public class ChessClient {
     private boolean gameState;
     private static REPL repl;
+    public ServerFacade facade;
 
     private enum GameStates{
         LOGGED_IN,
@@ -14,8 +15,8 @@ public class ChessClient {
     }
 
     public ChessClient() {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
+        System.out.println("♕ Welcome to the 240 Chess Client ♕");
+        facade = new ServerFacade("http://localhost:8080");
         initializeREPL();
     }
 
@@ -24,14 +25,14 @@ public class ChessClient {
     }
 
     public void login(ServerFacade facade){
-        repl = new PostlogREPL(this, facade);
+        repl = new PostlogREPL(this);
     }
 
     public void logout(ServerFacade facade){
-        repl = new PrelogREPL(this, facade);
+        repl = new PrelogREPL(this);
     }
 
-    public void joinGame(ServerFacade facade, int gameID, String color){
-        repl = new GameREPL(this, facade, gameID, color);
+    public void joinGame(int gameID, String color){
+        repl = new GameREPL(this, gameID, color);
     }
 }

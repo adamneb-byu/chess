@@ -7,14 +7,6 @@ import java.util.Scanner;
 public class PrelogREPL extends REPL {
     public boolean running;
     public PrelogREPL(ChessClient parent){
-        facade = new ServerFacade("http://localhost:8080");
-        parentClient = parent;
-        running = true;
-        run();
-    }
-
-    public PrelogREPL(ChessClient parent, ServerFacade facade){
-        this.facade = facade;
         parentClient = parent;
         running = true;
         run();
@@ -62,7 +54,7 @@ public class PrelogREPL extends REPL {
             throw new RuntimeException("Invalid input. Please try again.");
         }
         try{
-            facade.register(input[1],input[2],input[3]);
+            parentClient.facade.register(input[1],input[2],input[3]);
         }catch(Exception e){
             throw new RuntimeException("Registration error. Please try again.");
         }
@@ -75,7 +67,7 @@ public class PrelogREPL extends REPL {
             throw new RuntimeException("Invalid input. Please try again.");
         }
         try{
-            facade.login(input[1],input[2]);
+            parentClient.facade.login(input[1],input[2]);
         }catch(Exception e){
             throw new RuntimeException("Invalid credentials. Please try again.");
         }
@@ -84,7 +76,7 @@ public class PrelogREPL extends REPL {
     }
 
     private void switchLogin(){
-        parentClient.login(facade);
+        parentClient.login(parentClient.facade);
         running = false;
     }
 
