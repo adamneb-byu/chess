@@ -17,7 +17,7 @@ public class PostlogREPL extends REPL {
 
     private void run(){
         Scanner scanner = new Scanner(System.in);
-        String input = "";
+        String input;
         while(running){
             System.out.print("[LOGGED IN] >>> ");
             input = scanner.nextLine();
@@ -61,12 +61,8 @@ public class PostlogREPL extends REPL {
                     running = false;
                     System.out.println("Until next time!");
                 }
-                case "help" -> {
-                    showHelp();
-                }
-                case null, default -> {
-                    System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
-                }
+                case "help" -> showHelp();
+                case null, default -> System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
             }
         }
     }
@@ -110,6 +106,7 @@ public class PostlogREPL extends REPL {
             int trueID = getTrueID(Integer.parseInt(input[1]));
             facade.join(input[2],trueID);
             parentClient.joinGame(facade, trueID, input[2]);
+            running = false;
         }catch(Exception e){
             throw new RuntimeException("Invalid selection. Try again.");
         }
@@ -121,8 +118,6 @@ public class PostlogREPL extends REPL {
             int count = 1;
             for(Object gameObject : games){
                 Map game = (Map) gameObject;
-                Double id = (Double) game.get("gameID");
-                Integer gameID = id.intValue();
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
                 String white = (String) game.get("whiteUsername");
                 if(white == null || white.equalsIgnoreCase("null")){

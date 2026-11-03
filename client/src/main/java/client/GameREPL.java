@@ -40,7 +40,7 @@ public class GameREPL extends REPL {
             switch(processInput(input)[0]){
                 case "leave" -> {
                     parentClient.login(facade);
-                    facade.join(displayColor,gameID);
+                    running = false;
                 }
                 case null, default -> {
                     System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
