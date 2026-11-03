@@ -19,7 +19,7 @@ public class GameREPL extends REPL {
         this.color = color.toUpperCase();
         this.gameID = gameID;
         if(color.equalsIgnoreCase("observer")){
-            displayColor = "OBSERVER";
+            displayColor = "WHITE";
         }else{
             displayColor = color.toUpperCase();
         }
