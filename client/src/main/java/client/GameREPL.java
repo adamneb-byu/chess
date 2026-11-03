@@ -38,6 +38,10 @@ public class GameREPL extends REPL {
             System.out.print("[" + color + "] >>> ");
             input = scanner.nextLine();
             switch(processInput(input)[0]){
+                case "leave" -> {
+                    parentClient.login(facade);
+                    facade.join(displayColor,gameID);
+                }
                 case null, default -> {
                     System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
                 }

@@ -85,11 +85,12 @@ public class PostlogREPL extends REPL {
         if(input.length != 2){
             throw new RuntimeException("Invalid input. Try again.");
         }
-        if(!gameExists(Integer.parseInt(input[1]))){
+        if(!isNumeric(input[1]) || !gameExists(Integer.parseInt(input[1]))){
             throw new RuntimeException("Invalid game ID. Try again.");
         }
         try{
-            parentClient.joinGame(facade, Integer.parseInt(input[1]),"OBSERVER");
+            int trueID = getTrueID(Integer.parseInt(input[1]));
+            parentClient.joinGame(facade, trueID,"OBSERVER");
         }catch(Exception e){
             throw new RuntimeException(e);
         }
@@ -99,32 +100,48 @@ public class PostlogREPL extends REPL {
         if(input.length != 3){
             throw new RuntimeException("Invalid input. Try again.");
         }
-        if(!gameExists(Integer.parseInt(input[1]))){
+        if(!isNumeric(input[1]) || !gameExists(Integer.parseInt(input[1]))){
             throw new RuntimeException("Invalid game ID. Try again.");
         }
         if(!input[2].equalsIgnoreCase("white") && !input[2].equalsIgnoreCase("black")){
             throw new RuntimeException("Invalid color. Try again.");
         }
         try {
-            facade.join(input[2],Integer.parseInt(input[1]));
-            parentClient.joinGame(facade, Integer.parseInt(input[1]), input[2]);
+            int trueID = getTrueID(Integer.parseInt(input[1]));
+            facade.join(input[2],trueID);
+            parentClient.joinGame(facade, trueID, input[2]);
         }catch(Exception e){
-            throw new RuntimeException(e);
+            throw new RuntimeException("Invalid selection. Try again.");
         }
     }
 
     private void processList() {
         try{
             ArrayList games = (ArrayList) facade.listGames().get("games");
+            int count = 1;
             for(Object gameObject : games){
                 Map game = (Map) gameObject;
                 Double id = (Double) game.get("gameID");
                 Integer gameID = id.intValue();
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
-                System.out.println("ID: " + gameID +
+                String white = (String) game.get("whiteUsername");
+                if(white == null || white.equalsIgnoreCase("null")){
+                    white = "<EMPTY>";
+                }
+                String black = (String) game.get("blackUsername");
+                if(black == null || black.equalsIgnoreCase("null")){
+                    black = "<EMPTY>";
+                }
+                System.out.println("ID: " + count +
                         "   Name: " + game.get("gameName") +
-                        "   White: " + game.get("whiteUsername") +
-                        "   Black: " + game.get("blackUsername"));
+                        "   White: " + white +
+                        "   Black: " + black);
+                System.out.print(EscapeSequences.RESET_TEXT_COLOR);
+                count++;
+            }
+            if(count == 1){
+                System.out.print(EscapeSequences.SET_TEXT_COLOR_GREEN);
+                System.out.println("No active games");
                 System.out.print(EscapeSequences.RESET_TEXT_COLOR);
             }
         }catch(Exception e){
@@ -182,13 +199,32 @@ public class PostlogREPL extends REPL {
 
     private boolean gameExists(int gameID){
         ArrayList games = (ArrayList) facade.listGames().get("games");
+        if(gameID < 1 || gameID > games.size()){
+            return false;
+        }
+        return true;
+    }
+
+    private int getTrueID(int clientGameID){
+        int count = 1;
+        ArrayList games = (ArrayList) facade.listGames().get("games");
         for(Object gameObject : games){
             Map game = (Map) gameObject;
             Integer id = ((Double) game.get("gameID")).intValue();
-            if(id == gameID){
-                return true;
+            if(count == clientGameID){
+                return id;
             }
+            count++;
         }
-        return false;
+        return -1;
+    }
+
+    private boolean isNumeric(String input){
+        try{
+            Integer.parseInt(input);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
     }
 }
