@@ -34,14 +34,13 @@ public class GameREPL extends REPL {
     private void run(){
         Scanner scanner = new Scanner(System.in);
         String input = "";
+        ClientDrawer.drawBoard(board,displayColor);
         while(running){
-            ClientDrawer.drawBoard(board,displayColor);
             System.out.print("[" + color + "] >>> ");
             input = scanner.nextLine();
             switch(processInput(input)[0]){
                 case "leave" -> {
-                    parentClient.login(parentClient.facade);
-                    running = false;
+                    processLeave();
                 }
                 case "help" -> {
                     System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN +
@@ -87,7 +86,24 @@ public class GameREPL extends REPL {
     }
 
     private void processMove(String[] input){
-
+        if(input.length != 3){
+            throw new RuntimeException("Incorrect number of arguments. Try again.");
+        }
+        ChessPosition chessPosFrom;
+        ChessPosition chessPosTo;
+        try{
+            chessPosFrom = processPosition(input[1]);
+            if(chessPosFrom.getRow() < 1 || chessPosFrom.getRow() > 8 || chessPosFrom.getColumn() < 1 || chessPosFrom.getColumn() > 8){
+                throw new RuntimeException();
+            }
+            chessPosTo = processPosition(input[2]);
+            if(chessPosTo.getRow() < 1 || chessPosTo.getRow() > 8 || chessPosTo.getColumn() < 1 || chessPosTo.getColumn() > 8){
+                throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid position. Try again.");
+        }
+        System.out.println("Move from " + chessPosFrom + " to " + chessPosTo);
     }
 
     private void processHighlight(String[] input){
@@ -109,6 +125,11 @@ public class GameREPL extends REPL {
 
     private void processResign(){
 
+    }
+
+    private void processLeave(){
+        parentClient.login(parentClient.facade);
+        running = false;
     }
 
     private ChessPosition processPosition(String position){
