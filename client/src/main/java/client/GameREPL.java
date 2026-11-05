@@ -119,7 +119,6 @@ public class GameREPL extends REPL {
         } catch (Exception e) {
             throw new RuntimeException("Invalid position. Try again.");
         }
-        System.out.println(chessPos);
         ClientDrawer.drawHighlightedBoard(board,displayColor,chessPos);
     }
 
