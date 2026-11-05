@@ -51,6 +51,10 @@ public class ClientDrawer {
         System.out.println(EscapeSequences.RESET_BG_COLOR + EscapeSequences.RESET_TEXT_COLOR);
     }
 
+    public static void drawHighlightedBoard(ChessBoard board, String color, ChessPosition pos){
+
+    }
+
     private static void drawBorderSquare(int pos, char[] letters){
         System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         System.out.print(EscapeSequences.SET_TEXT_COLOR_DARK_GREY);
