@@ -101,14 +101,15 @@ public class PostlogREPL extends REPL {
         if(!input[2].equalsIgnoreCase("white") && !input[2].equalsIgnoreCase("black")){
             throw new RuntimeException("Invalid color. Try again.");
         }
+        int trueID;
         try {
-            int trueID = getTrueID(Integer.parseInt(input[1]));
+            trueID = getTrueID(Integer.parseInt(input[1]));
             parentClient.facade.join(input[2],trueID);
-            parentClient.joinGame(trueID, input[2]);
-            running = false;
         }catch(Exception e){
             throw new RuntimeException("Invalid selection. Try again.");
         }
+        parentClient.joinGame(trueID, input[2]);
+        running = false;
     }
 
     private void processList() {

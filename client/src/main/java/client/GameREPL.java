@@ -103,6 +103,7 @@ public class GameREPL extends REPL {
         } catch (Exception e) {
             throw new RuntimeException("Invalid position. Try again.");
         }
+        System.out.println(chessPos);
         ClientDrawer.drawHighlightedBoard(board,displayColor,chessPos);
     }
 
@@ -114,8 +115,8 @@ public class GameREPL extends REPL {
         char letter = position.toLowerCase().charAt(0);
         char number = position.charAt(1);
 
-        // Subtract 60 since ASCII for 'a' is 61
-        int col = letter - 60;
+        // Subtract 60 since ASCII for 'a' is 97
+        int col = letter - 96;
         int row = Integer.parseInt(""+number);
 
         return new ChessPosition(row, col);
