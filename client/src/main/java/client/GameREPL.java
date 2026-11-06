@@ -16,6 +16,7 @@ public class GameREPL extends REPL {
     private final String displayColor;
     private ChessBoard board;
     private int gameID;
+    private ChessGame gameState;
 
     public GameREPL(ChessClient parent, int gameID, String color){
         this.color = color.toUpperCase();

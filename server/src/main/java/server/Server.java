@@ -5,21 +5,28 @@ import handler.AlreadyTakenException;
 import handler.BadInputException;
 import handler.GeneralHandler;
 import io.javalin.http.Header;
+import io.javalin.websocket.WsMessageContext;
+import jakarta.websocket.*;
 import service.IncorrectPasswordException;
 import service.NotFoundException;
 import io.javalin.*;
 import io.javalin.http.Context;
 import org.jetbrains.annotations.NotNull;
 import service.UnauthorizedException;
+import websocket.WebsocketHandler;
+
+import java.io.IOException;
 
 public class Server {
 
     private final Javalin javalin;
 
     private final GeneralHandler handler;
+    private final WebsocketHandler wsHandler;
 
     public Server() {
         handler = new GeneralHandler();
+        wsHandler = new WebsocketHandler(handler);
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .delete("/db", this::clear)
                 .post("/user", this::register)
@@ -33,9 +40,13 @@ public class Server {
                         ctx.enableAutomaticPings();
                         System.out.println("Websocket connected.");
                     });
-                    ws.onMessage(ctx -> ctx.send("WS response" + ctx.message()));
+                    ws.onMessage(this::processWebsocketMessage);
                     ws.onClose(ctx -> System.out.println("Websocket closed"));
                 });
+    }
+
+    private void processWebsocketMessage(@NotNull WsMessageContext wsMessageContext) throws IOException {
+        wsHandler.handleMessage(wsMessageContext);
     }
 
     public void joinGame(@NotNull Context context) {
