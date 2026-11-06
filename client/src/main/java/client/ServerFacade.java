@@ -14,6 +14,7 @@ import java.util.Map;
 public class ServerFacade {
     String serverUrl;
     String authToken;
+    private WebsocketFacade wsFacade;
 
     public ServerFacade(String url){
         serverUrl = url;
