@@ -18,8 +18,10 @@ import java.util.ArrayList;
 
 public class WebsocketHandler {
     private final GeneralHandler generalHandler;
+    private final SessionManager sessionManager;
     public WebsocketHandler(GeneralHandler handler){
         generalHandler = handler;
+        sessionManager = new SessionManager();
     }
     public void handleMessage(@NotNull WsMessageContext ctx) throws IOException {
         int gameID = -1;
@@ -32,6 +34,9 @@ public class WebsocketHandler {
 
             switch(command.getCommandType()){
                 case CONNECT -> connect(session, username, (UserConnectCommand) command);
+                case MAKE_MOVE -> makeMove(session, username, (UserMakeMoveCommand) command);
+                case LEAVE -> leave(session, username, (UserLeaveCommand) command);
+                case RESIGN -> resign(session, username, (UserResignCommand) command);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -44,6 +49,18 @@ public class WebsocketHandler {
     }
 
     private void connect(Session session, String username, UserConnectCommand command){
+
+    }
+
+    private void makeMove(Session session, String username, UserMakeMoveCommand command){
+
+    }
+
+    private void leave(Session session, String username, UserLeaveCommand command){
+
+    }
+
+    private void resign(Session session, String username, UserResignCommand command){
 
     }
 
