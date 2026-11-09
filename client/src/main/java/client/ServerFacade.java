@@ -14,10 +14,11 @@ import java.util.Map;
 public class ServerFacade {
     String serverUrl;
     String authToken;
-    private WebsocketFacade wsFacade;
+    public WebsocketFacade wsFacade;
 
     public ServerFacade(String url){
         serverUrl = url;
+        wsFacade = new WebsocketFacade();
     }
 
     public void clear(){

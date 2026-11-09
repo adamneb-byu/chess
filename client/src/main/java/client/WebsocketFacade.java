@@ -21,7 +21,7 @@ public class WebsocketFacade extends Endpoint {
         // THIS PAGE INTENTIONALLY LEFT BLANK
     }
 
-    private WebsocketFacade() {
+    public WebsocketFacade() {
         try{
             serverUrl = "ws://localhost:8080/ws";
             URI uri = new URI(serverUrl);

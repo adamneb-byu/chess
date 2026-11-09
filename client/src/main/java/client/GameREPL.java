@@ -1,14 +1,15 @@
 package client;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPosition;
+import chess.*;
 import com.google.gson.Gson;
 import ui.EscapeSequences;
+import websocket.commands.UserMakeMoveCommand;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+
+import static chess.ChessPiece.PieceType.*;
 
 public class GameREPL extends REPL {
     public boolean running;
@@ -17,8 +18,9 @@ public class GameREPL extends REPL {
     private ChessBoard board;
     private int gameID;
     private ChessGame gameState;
+    private String authToken;
 
-    public GameREPL(ChessClient parent, int gameID, String color){
+    public GameREPL(ChessClient parent, int gameID, String color) {
         this.color = color.toUpperCase();
         this.gameID = gameID;
         if(color.equalsIgnoreCase("observer")){
@@ -32,7 +34,7 @@ public class GameREPL extends REPL {
         run();
     }
 
-    private void run(){
+    private void run() {
         Scanner scanner = new Scanner(System.in);
         String input = "";
         ClientDrawer.drawBoard(board,displayColor);
@@ -86,7 +88,7 @@ public class GameREPL extends REPL {
         }
     }
 
-    private void processMove(String[] input){
+    private void processMove(String[] input) {
         if(input.length != 3){
             throw new RuntimeException("Incorrect number of arguments. Try again.");
         }
@@ -104,7 +106,39 @@ public class GameREPL extends REPL {
         } catch (Exception e) {
             throw new RuntimeException("Invalid position. Try again.");
         }
+        ChessPiece.PieceType promo = checkPromotion(chessPosFrom, chessPosTo);
         System.out.println("Move from " + chessPosFrom + " to " + chessPosTo);
+        String authToken = "REPLACE ME";
+        var command = new UserMakeMoveCommand(authToken,gameID,new ChessMove(chessPosFrom, chessPosTo, promo));
+        try {
+            parentClient.facade.wsFacade.send(new Gson().toJson(command));
+        }catch(Exception e){
+            System.out.println("Failed to make move. Please try again.");
+        }
+    }
+
+    private ChessPiece.PieceType checkPromotion(ChessPosition start, ChessPosition end){
+        if(board.getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN &&
+                (end.getRow() == 1 || end.getRow() == 8)){
+            Scanner getPromo = new Scanner(System.in);
+            System.out.println("Your pawn is about to promote! Enter N, R, B, or Q to choose a promotion piece: ");
+            String promo = getPromo.nextLine();
+            switch(promo){
+                case "N" -> {
+                    return KNIGHT;
+                }
+                case "B" -> {
+                    return BISHOP;
+                }
+                case "R" -> {
+                    return ROOK;
+                }
+                case "Q" -> {
+                    return QUEEN;
+                }
+            }
+        }
+        return null;
     }
 
     private void processHighlight(String[] input){
@@ -152,6 +186,7 @@ public class GameREPL extends REPL {
                 String gameJson = new Gson().toJson(game.get("game"));
                 ChessGame chessGame = new Gson().fromJson(gameJson, ChessGame.class);
                 board = chessGame.getBoard();
+                gameState = chessGame;
             }
         }
     }

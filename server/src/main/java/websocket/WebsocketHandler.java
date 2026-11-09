@@ -6,7 +6,7 @@ import data.UserData;
 import dataaccess.DataAccessException;
 import handler.GeneralHandler;
 import io.javalin.websocket.WsMessageContext;
-//import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import service.NotFoundException;
 import websocket.commands.*;
@@ -25,7 +25,7 @@ public class WebsocketHandler {
     }
     public void handleMessage(@NotNull WsMessageContext ctx) throws IOException {
         int gameID = -1;
-        Session session = (Session) ctx.session;
+        var session = ctx.session;
 
         try{
             UserGameCommand command = new Gson().fromJson(ctx.message(), UserGameCommand.class);
@@ -45,7 +45,7 @@ public class WebsocketHandler {
     }
 
     public void sendMessage(Session session, int gameID, ServerMessage message) throws IOException {
-        session.getBasicRemote().sendText(new Gson().toJson(message));
+        session.getRemote().sendString(new Gson().toJson(message));
     }
 
     private void connect(Session session, String username, UserConnectCommand command){
@@ -53,7 +53,7 @@ public class WebsocketHandler {
     }
 
     private void makeMove(Session session, String username, UserMakeMoveCommand command){
-
+        System.out.println("Received message! " + command.getMove());
     }
 
     private void leave(Session session, String username, UserLeaveCommand command){
