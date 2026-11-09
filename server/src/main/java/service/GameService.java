@@ -31,6 +31,10 @@ public class GameService {
         return gameDAO.createGame(gameName);
     }
 
+    public void userLeave(String username, int gameID) throws DataAccessException {
+        gameDAO.userLeave(username, gameID);
+    }
+
     public void joinGame(JoinRequest request, String username) throws DataAccessException {
         gameDAO.addUser(request, username);
     }

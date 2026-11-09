@@ -105,6 +105,21 @@ public class DatabaseGameDAO implements GameDAO {
         }
     }
 
+    public void userLeave(String username, int gameID) throws DataAccessException {
+        GameData game = getGame(gameID);
+        if(game == null){
+            throw new NotFoundException("Error: game not found");
+        }
+
+        if(game.whiteUsername().equals(username)){
+            DatabaseManager.executeStatement("UPDATE game SET whiteUsername = NULL WHERE gameID = " + gameID);
+        }else if(game.blackUsername().equals(username)){
+            DatabaseManager.executeStatement("UPDATE game SET blackUsername = NULL WHERE gameID = " + gameID);
+        }else{
+            throw new NotFoundException("Error: user with given name is not in the game");
+        }
+    }
+
     @Override
     public boolean gameExists(String gameName) throws DataAccessException {
         try(var conn = DatabaseManager.getConnection()){

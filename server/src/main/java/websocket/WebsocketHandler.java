@@ -59,6 +59,22 @@ public class WebsocketHandler {
 
     private void leave(Session session, String username, UserLeaveCommand command){
         System.out.println("Received message! " + username + " is out of here");
+        ServerMessage msg;
+        try {
+            generalHandler.userLeave(username, command.getGameID());
+            msg = new ServerNotificationMessage(username + " left the game");
+        }catch (NotFoundException e){
+            System.out.println(e.getMessage());
+            msg = new ServerErrorMessage("Error! Given user not found.");
+        }catch (Exception e){
+            System.out.println("Server error leaving game");
+            msg = new ServerErrorMessage("Error! Something went wrong.");
+        }
+        try {
+            sendMessage(session, command.getGameID(), msg);
+        } catch (IOException e) {
+            System.out.println("Error sending leave message");
+        }
     }
 
     private void resign(Session session, String username, UserResignCommand command){

@@ -103,6 +103,10 @@ public class GeneralHandler {
         }
     }
 
+    public void userLeave(String username, int gameID) throws DataAccessException {
+        gameService.userLeave(username, gameID);
+    }
+
     public ArrayList<UserData> listUsers() throws DataAccessException {
         return userService.listUsers();
     }
