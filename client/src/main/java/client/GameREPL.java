@@ -108,8 +108,13 @@ public class GameREPL extends REPL {
         ChessPiece.PieceType promo = checkPromotion(chessPosFrom, chessPosTo);
         System.out.println("Move from " + chessPosFrom + " to " + chessPosTo);
         String authToken = parentClient.facade.authToken;
-        var command = new UserMakeMoveCommand(authToken,gameID,new ChessMove(chessPosFrom, chessPosTo, promo));
+        ChessMove myMove = new ChessMove(chessPosFrom, chessPosTo, promo);
+        var command = new UserMakeMoveCommand(authToken,gameID,myMove);
         try {
+            if(!gameState.isPossibleMove(myMove,gameState.validMoves(chessPosFrom))){
+                System.out.println("Move is invalid!");
+                throw new RuntimeException("Invalid move");
+            }
             parentClient.facade.wsFacade.send(new Gson().toJson(command));
         }catch(Exception e){
             System.out.println("Failed to make move. Please try again.");
