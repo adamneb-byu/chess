@@ -50,7 +50,7 @@ public class WebsocketHandler {
     }
 
     private void connect(Session session, String username, UserConnectCommand command){
-
+        System.out.println("Received message! " + username + " has joined the fray!");
     }
 
     private void makeMove(Session session, String username, UserMakeMoveCommand command){
@@ -58,11 +58,11 @@ public class WebsocketHandler {
     }
 
     private void leave(Session session, String username, UserLeaveCommand command){
-
+        System.out.println("Received message! " + username + " is out of here");
     }
 
     private void resign(Session session, String username, UserResignCommand command){
-
+        System.out.println("Received message! Yeah that's right raise the white flag " + username + " you coward");
     }
 
     private String getUsername(String authToken) throws DataAccessException {

@@ -3,7 +3,9 @@ package client;
 import chess.*;
 import com.google.gson.Gson;
 import ui.EscapeSequences;
+import websocket.commands.UserLeaveCommand;
 import websocket.commands.UserMakeMoveCommand;
+import websocket.commands.UserResignCommand;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -42,7 +44,11 @@ public class GameREPL extends REPL {
             input = scanner.nextLine();
             switch(processInput(input)[0]){
                 case "leave" -> {
-                    processLeave();
+                    try{
+                        processLeave();
+                    }catch(Exception e){
+                        System.out.println("Error leaving. Try again.");
+                    }
                 }
                 case "help" -> {
                     System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN +
@@ -78,7 +84,11 @@ public class GameREPL extends REPL {
                 }
                 case "redraw" -> ClientDrawer.drawBoard(board, displayColor);
                 case "resign" -> {
-                    processResign();
+                    try {
+                        processResign();
+                    }catch(Exception e){
+                        System.out.println("Error resigning. Try again.");
+                    }
                 }
                 case null, default -> {
                     System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
@@ -161,11 +171,14 @@ public class GameREPL extends REPL {
         ClientDrawer.drawHighlightedBoard(board,displayColor,chessPos);
     }
 
-    private void processResign(){
-
+    private void processResign() throws Exception {
+        UserResignCommand command = new UserResignCommand(parentClient.facade.authToken,gameID);
+        parentClient.facade.wsFacade.send(new Gson().toJson(command));
     }
 
-    private void processLeave(){
+    private void processLeave() throws Exception {
+        UserLeaveCommand command = new UserLeaveCommand(parentClient.facade.authToken,gameID);
+        parentClient.facade.wsFacade.send(new Gson().toJson(command));
         parentClient.login(parentClient.facade);
         running = false;
     }
