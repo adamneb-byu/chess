@@ -15,6 +15,7 @@ import jakarta.websocket.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WebsocketHandler {
     private final GeneralHandler generalHandler;
@@ -28,7 +29,7 @@ public class WebsocketHandler {
         var session = ctx.session;
 
         try{
-            UserGameCommand command = new Gson().fromJson(ctx.message(), UserGameCommand.class);
+            var command = processCommand(ctx.message());//new Gson().fromJson(ctx.message(), UserGameCommand.class);
             gameID = command.getGameID();
             String username = getUsername(command.getAuthToken());
 
@@ -72,5 +73,25 @@ public class WebsocketHandler {
             }
         }
         throw new NotFoundException("No user found with given authToken.");
+    }
+
+    private UserGameCommand processCommand(String msg){
+        HashMap<String, String> cmdMap = new Gson().fromJson(msg, HashMap.class);
+        switch(cmdMap.get("commandType")){
+            case "CONNECT" -> {
+                return new Gson().fromJson(msg, UserConnectCommand.class);
+            }
+            case "MAKE_MOVE" -> {
+                return new Gson().fromJson(msg, UserMakeMoveCommand.class);
+            }
+            case "LEAVE" -> {
+                return new Gson().fromJson(msg, UserLeaveCommand.class);
+            }
+            case "RESIGN" -> {
+                return new Gson().fromJson(msg, UserResignCommand.class);
+            }
+            case null, default -> throw new RuntimeException("Unrecognized command type");
+
+        }
     }
 }

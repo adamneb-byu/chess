@@ -18,7 +18,6 @@ public class GameREPL extends REPL {
     private ChessBoard board;
     private int gameID;
     private ChessGame gameState;
-    private String authToken;
 
     public GameREPL(ChessClient parent, int gameID, String color) {
         this.color = color.toUpperCase();
@@ -108,7 +107,7 @@ public class GameREPL extends REPL {
         }
         ChessPiece.PieceType promo = checkPromotion(chessPosFrom, chessPosTo);
         System.out.println("Move from " + chessPosFrom + " to " + chessPosTo);
-        String authToken = "REPLACE ME";
+        String authToken = parentClient.facade.authToken;
         var command = new UserMakeMoveCommand(authToken,gameID,new ChessMove(chessPosFrom, chessPosTo, promo));
         try {
             parentClient.facade.wsFacade.send(new Gson().toJson(command));
