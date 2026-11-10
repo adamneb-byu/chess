@@ -46,11 +46,14 @@ public class WebsocketHandler {
     }
 
     public void sendMessage(Session session, int gameID, ServerMessage message) throws IOException {
-        session.getRemote().sendString(new Gson().toJson(message));
+        //session.getRemote().sendString(new Gson().toJson(message));
+        sessionManager.broadcast(gameID, message);
     }
 
-    private void connect(Session session, String username, UserConnectCommand command){
+    private void connect(Session session, String username, UserConnectCommand command) throws IOException {
         System.out.println("Received message! " + username + " has joined the fray!");
+        sessionManager.addSession(command.getGameID(), session);
+        sendMessage(session, command.getGameID(), new ServerNotificationMessage(username + " has joined the game"));
     }
 
     private void makeMove(Session session, String username, UserMakeMoveCommand command){
@@ -77,6 +80,7 @@ public class WebsocketHandler {
         try {
             generalHandler.userLeave(username, command.getGameID());
             msg = new ServerNotificationMessage(username + " left the game");
+            sessionManager.removeSession(command.getGameID(),session);
         }catch (NotFoundException e){
             System.out.println(e.getMessage());
             msg = new ServerErrorMessage("Error! Given user not found.");

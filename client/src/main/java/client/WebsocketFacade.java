@@ -47,7 +47,14 @@ public class WebsocketFacade extends Endpoint {
     }
 
     private void serverError(ServerErrorMessage msg){
-        System.out.println("Received an error");
+        System.out.println("\n[ERROR] >>> " + msg.getErrorMessage());
+        printNewColor();
+    }
+
+    private void printNewColor(){
+        if(gameREPL != null){
+            gameREPL.printNewName();
+        }
     }
 
     private void loadGame(ServerLoadMessage msg){
@@ -57,7 +64,8 @@ public class WebsocketFacade extends Endpoint {
     }
 
     private void notification(ServerNotificationMessage msg){
-        System.out.println("Received a notification");
+        System.out.println("\n[SERVER] >>> " + msg.getMessage());
+        printNewColor();
     }
 
     public void send(String msg) throws Exception{

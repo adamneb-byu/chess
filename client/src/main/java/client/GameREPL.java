@@ -3,6 +3,7 @@ package client;
 import chess.*;
 import com.google.gson.Gson;
 import ui.EscapeSequences;
+import websocket.commands.UserConnectCommand;
 import websocket.commands.UserLeaveCommand;
 import websocket.commands.UserMakeMoveCommand;
 import websocket.commands.UserResignCommand;
@@ -32,7 +33,17 @@ public class GameREPL extends REPL {
         parentClient.facade.wsFacade.updateREPL(this);
         updateBoard();
         running = true;
+        connect();
         run();
+    }
+
+    private void connect(){
+        var command = new UserConnectCommand(parentClient.facade.authToken, gameID);
+        try {
+            parentClient.facade.wsFacade.send(new Gson().toJson(command));
+        } catch (Exception e) {
+            System.out.println("Unable to connect. Sorry :/");
+        }
     }
 
     private void run() {
@@ -40,7 +51,7 @@ public class GameREPL extends REPL {
         String input = "";
         ClientDrawer.drawBoard(gameState.getBoard(),displayColor);
         while(running){
-            System.out.print("[" + color + "] >>> ");
+            printNewName();
             input = scanner.nextLine();
             switch(processInput(input)[0]){
                 case "leave" -> {
@@ -95,6 +106,10 @@ public class GameREPL extends REPL {
                 }
             }
         }
+    }
+
+    public void printNewName(){
+        System.out.print("[" + color + "] >>> ");
     }
 
     private void processMove(String[] input) {
