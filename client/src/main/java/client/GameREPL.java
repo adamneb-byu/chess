@@ -8,6 +8,7 @@ import websocket.commands.UserLeaveCommand;
 import websocket.commands.UserMakeMoveCommand;
 import websocket.commands.UserResignCommand;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
@@ -196,7 +197,8 @@ public class GameREPL extends REPL {
         } catch (Exception e) {
             throw new RuntimeException("Invalid position. Try again.");
         }
-        ClientDrawer.drawHighlightedBoard(gameState.getBoard(),displayColor,chessPos);
+        ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameState.validMoves(chessPos);
+        ClientDrawer.drawHighlightedBoard(gameState.getBoard(),displayColor, validMoves);
     }
 
     private void processResign() throws Exception {

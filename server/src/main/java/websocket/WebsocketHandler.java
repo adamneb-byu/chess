@@ -1,5 +1,6 @@
 package websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import data.AuthData;
 import data.UserData;
@@ -31,46 +32,87 @@ public class WebsocketHandler {
         try{
             var command = processCommand(ctx.message());
             gameID = command.getGameID();
-            String username = getUsername(command.getAuthToken());
+            try {
+                String username = getUsername(command.getAuthToken());
 
-            switch(command.getCommandType()){
-                case CONNECT -> connect(session, username, (UserConnectCommand) command);
-                case MAKE_MOVE -> makeMove(session, username, (UserMakeMoveCommand) command);
-                case LEAVE -> leave(session, username, (UserLeaveCommand) command);
-                case RESIGN -> resign(session, username, (UserResignCommand) command);
+                switch (command.getCommandType()) {
+                    case CONNECT -> connect(session, username, (UserConnectCommand) command);
+                    case MAKE_MOVE -> makeMove(session, username, (UserMakeMoveCommand) command);
+                    case LEAVE -> leave(session, username, (UserLeaveCommand) command);
+                    case RESIGN -> resign(session, username, (UserResignCommand) command);
+                }
+            }catch(NotFoundException e){
+                var msg = new ServerErrorMessage("Error: Invalid authToken");
+                session.getRemote().sendString(new Gson().toJson(msg));
             }
         }catch (Exception e){
-            e.printStackTrace();
-            sendMessage(session, gameID, new ServerErrorMessage("Error: " + e.getMessage()));
+            sendMessage(null, gameID, new ServerErrorMessage("Error: " + e.getMessage()));
         }
     }
 
     public void sendMessage(Session session, int gameID, ServerMessage message) throws IOException {
-        //session.getRemote().sendString(new Gson().toJson(message));
         sessionManager.broadcast(gameID, message, session);
     }
 
     private void connect(Session session, String username, UserConnectCommand command) throws IOException, DataAccessException {
         System.out.println("Received message! " + username + " has joined the fray!");
         sessionManager.addSession(command.getGameID(), session);
-        var msg = new ServerLoadMessage(new Gson().toJson(generalHandler.getGame(command.getGameID())));
-        session.getRemote().sendString(new Gson().toJson(msg));
-        sendMessage(session, command.getGameID(), new ServerNotificationMessage(username + " has joined the game"));
+        try{
+            if(generalHandler.getGame(command.getGameID()) == null){
+                throw new NotFoundException("Game ID not found");
+            }
+            var msg = new ServerLoadMessage(new Gson().toJson(generalHandler.getGame(command.getGameID())));
+            session.getRemote().sendString(new Gson().toJson(msg));
+            sendMessage(session, command.getGameID(), new ServerNotificationMessage(username + " has joined the game"));
+        } catch (Exception e) {
+            var msg = new ServerErrorMessage("Error: Invalid game ID");
+            session.getRemote().sendString(new Gson().toJson(msg));
+        }
+
     }
 
     private void makeMove(Session session, String username, UserMakeMoveCommand command){
         System.out.println("Received message! " + command.getMove());
         ServerMessage msg;
         try{
+            if(generalHandler.getGame(command.getGameID()).game().gameOver){
+                throw new RuntimeException("The game hath been overed!");
+            }
+            var teamTurn = generalHandler.getGame(command.getGameID()).game().getTeamTurn();
+            var gameData = generalHandler.getGame(command.getGameID());
+            if(teamTurn.equals(ChessGame.TeamColor.WHITE) && !username.equals(gameData.whiteUsername())){
+                throw new RuntimeException("It's not your turn!");
+            }
+            if(teamTurn.equals(ChessGame.TeamColor.BLACK) && !username.equals(gameData.blackUsername())){
+                throw new RuntimeException("It's not your turn!");
+            }
             generalHandler.updateGame(command.getGameID(), command.getMove());
             msg = new ServerNotificationMessage(username + " made a move.");
-            String updatedGame = new Gson().toJson(generalHandler.getGame(command.getGameID()).game());
-            sendMessage(session, command.getGameID(), new ServerLoadMessage(updatedGame));
+            var game = generalHandler.getGame(command.getGameID()).game();
+            String updatedGame = new Gson().toJson(game);
+            sendMessage(null, command.getGameID(), new ServerLoadMessage(updatedGame));
+            ServerMessage endgameMsg;
+            if(game.isInCheckmate(ChessGame.TeamColor.WHITE)){
+                endgameMsg = new ServerNotificationMessage("White is in checkmate! Black wins!");
+            }else if(game.isInCheckmate(ChessGame.TeamColor.BLACK)){
+                endgameMsg = new ServerNotificationMessage("Black is in checkmate! White wins!");
+            }else if(game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)){
+                endgameMsg = new ServerNotificationMessage("Stalemate! Nobody wins!");
+            }else{
+                endgameMsg = null;
+            }
+            if(endgameMsg != null){
+                sendMessage(null, command.getGameID(), endgameMsg);
+            }
         }catch (Exception e){
             msg = new ServerErrorMessage("Server error!");
         }
         try {
-            sendMessage(session, command.getGameID(), msg);
+            if(msg.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
+                session.getRemote().sendString(new Gson().toJson(msg));
+            }else{
+                sendMessage(session, command.getGameID(), msg);
+            }
         } catch (IOException e) {
             System.out.println("Error sending move message");
         }

@@ -50,13 +50,12 @@ public class ClientDrawer {
         System.out.println(EscapeSequences.RESET_BG_COLOR + EscapeSequences.RESET_TEXT_COLOR);
     }
 
-    public static void drawHighlightedBoard(ChessBoard board, String color, ChessPosition pos){
-        ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,pos);
+    public static void drawHighlightedBoard(ChessBoard board, String color, ArrayList<ChessMove> validMoves){
+        //ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,pos);
         boolean whiteSquare = true;
         char[] letters = {'a','b','c','d','e','f','g','h'};
         char[] numbers = {'8','7','6','5','4','3','2','1'};
         if(color.equalsIgnoreCase("black")){
-            //whiteSquare = false;
             letters = new char[]{'h','g','f','e','d','c','b','a'};
             numbers = new char[]{'1','2','3','4','5','6','7','8'};
         }

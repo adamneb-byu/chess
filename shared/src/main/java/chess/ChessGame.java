@@ -15,7 +15,7 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board = new ChessBoard();
-    private boolean gameOver = false;
+    public boolean gameOver = false;
 
     public ChessGame() {
         teamTurn = TeamColor.WHITE;
@@ -133,6 +133,9 @@ public class ChessGame {
                 teamTurn = TeamColor.WHITE;
             }else{
                 teamTurn = TeamColor.BLACK;
+            }
+            if(isInCheckmate(teamTurn) || isInStalemate(teamTurn)){
+                gameOver = true;
             }
             board.resetLastMoves(teamTurn);
         }else{
