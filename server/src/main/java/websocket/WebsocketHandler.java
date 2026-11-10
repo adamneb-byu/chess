@@ -118,30 +118,51 @@ public class WebsocketHandler {
         }
     }
 
-    private void leave(Session session, String username, UserLeaveCommand command){
+    private void leave(Session session, String username, UserLeaveCommand command) throws IOException, DataAccessException {
         System.out.println("Received message! " + username + " is out of here");
         ServerMessage msg;
-        try {
-            generalHandler.userLeave(username, command.getGameID());
-            msg = new ServerNotificationMessage(username + " left the game");
-            sessionManager.removeSession(command.getGameID(),session);
-        }catch (NotFoundException e){
-            System.out.println(e.getMessage());
-            msg = new ServerErrorMessage("Error! Given user not found.");
-        }catch (Exception e){
-            System.out.println("Server error leaving game");
-            msg = new ServerErrorMessage("Error! Something went wrong.");
-        }
-        try {
+        var gameData = generalHandler.getGame(command.getGameID());
+        if(!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())){
+            msg = new ServerNotificationMessage("Observer " + username + " left the game");
             sendMessage(session, command.getGameID(), msg);
-        } catch (IOException e) {
-            System.out.println("Error sending leave message");
+        }else {
+            try {
+                generalHandler.userLeave(username, command.getGameID());
+                msg = new ServerNotificationMessage(username + " left the game");
+                sessionManager.removeSession(command.getGameID(), session);
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+                msg = new ServerErrorMessage("Error! Given user not found.");
+            } catch (Exception e) {
+                System.out.println("Server error leaving game");
+                msg = new ServerErrorMessage("Error! Something went wrong.");
+            }
+            try {
+                sendMessage(session, command.getGameID(), msg);
+            } catch (IOException e) {
+                System.out.println("Error sending leave message");
+            }
         }
     }
 
-    private void resign(Session session, String username, UserResignCommand command){
+    private void resign(Session session, String username, UserResignCommand command) throws DataAccessException, IOException {
         System.out.println("Received message! Yeah that's right raise the white flag " + username + " you coward");
-
+        var gameData = generalHandler.getGame(command.getGameID());
+        var game = gameData.game();
+        var alreadyOver = game.gameOver;
+        game.gameOver = true;
+        generalHandler.endGame(command.getGameID());
+        ServerMessage message;
+        if(alreadyOver){
+            message = new ServerErrorMessage("The game is already over!");
+            session.getRemote().sendString(new Gson().toJson(message));
+        }else if(!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())){
+            message = new ServerErrorMessage("Observers can't resign!");
+            session.getRemote().sendString(new Gson().toJson(message));
+        }else {
+            message = new ServerNotificationMessage(username + " has resigned. Game over!");
+            sendMessage(null, command.getGameID(), message);
+        }
     }
 
     private String getUsername(String authToken) throws DataAccessException {

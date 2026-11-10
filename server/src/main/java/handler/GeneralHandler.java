@@ -113,6 +113,10 @@ public class GeneralHandler {
         gameService.updateGame(gameID, move);
     }
 
+    public void endGame(int gameID) throws DataAccessException {
+        gameService.endGame(gameID);
+    }
+
     public ArrayList<UserData> listUsers() throws DataAccessException {
         return userService.listUsers();
     }

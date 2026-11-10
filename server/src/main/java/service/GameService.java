@@ -41,6 +41,10 @@ public class GameService {
         gameDAO.updateGame(gameID, move);
     }
 
+    public void endGame(int gameID) throws DataAccessException {
+        gameDAO.endGame(gameID);
+    }
+
     public void joinGame(JoinRequest request, String username) throws DataAccessException {
         gameDAO.addUser(request, username);
     }

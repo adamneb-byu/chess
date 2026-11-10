@@ -133,6 +133,17 @@ public class DatabaseGameDAO implements GameDAO {
         }
     }
 
+    public void endGame(int gameID) throws DataAccessException {
+        ChessGame game = getGame(gameID).game();
+        try {
+            game.gameOver = true;
+            String gameString = new Gson().toJson(game);
+            DatabaseManager.executeStatement("UPDATE game SET chessGame = '" + gameString + "' WHERE gameID = " + gameID);
+        }catch(Exception e){
+            throw new RuntimeException("Error ending game");
+        }
+    }
+
     @Override
     public boolean gameExists(String gameName) throws DataAccessException {
         try(var conn = DatabaseManager.getConnection()){
