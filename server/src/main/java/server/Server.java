@@ -6,7 +6,7 @@ import handler.BadInputException;
 import handler.GeneralHandler;
 import io.javalin.http.Header;
 import io.javalin.websocket.WsMessageContext;
-import jakarta.websocket.*;
+//import jakarta.websocket.*;
 import service.IncorrectPasswordException;
 import service.NotFoundException;
 import io.javalin.*;
