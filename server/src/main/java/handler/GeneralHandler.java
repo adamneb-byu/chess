@@ -1,5 +1,7 @@
 package handler;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import data.AuthData;
@@ -105,6 +107,10 @@ public class GeneralHandler {
 
     public void userLeave(String username, int gameID) throws DataAccessException {
         gameService.userLeave(username, gameID);
+    }
+
+    public void updateGame(int gameID, ChessMove move) throws DataAccessException {
+        gameService.updateGame(gameID, move);
     }
 
     public ArrayList<UserData> listUsers() throws DataAccessException {

@@ -1,5 +1,7 @@
 package service;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import data.GameData;
 import data.GameDataPublic;
 import dataaccess.*;
@@ -33,6 +35,10 @@ public class GameService {
 
     public void userLeave(String username, int gameID) throws DataAccessException {
         gameDAO.userLeave(username, gameID);
+    }
+
+    public void updateGame(int gameID, ChessMove move) throws DataAccessException {
+        gameDAO.updateGame(gameID, move);
     }
 
     public void joinGame(JoinRequest request, String username) throws DataAccessException {

@@ -55,6 +55,18 @@ public class WebsocketHandler {
 
     private void makeMove(Session session, String username, UserMakeMoveCommand command){
         System.out.println("Received message! " + command.getMove());
+        ServerMessage msg;
+        try{
+            generalHandler.updateGame(command.getGameID(), command.getMove());
+            msg = new ServerNotificationMessage(username + " made a move.");
+        }catch (Exception e){
+            msg = new ServerErrorMessage("Server error!");
+        }
+        try {
+            sendMessage(session, command.getGameID(), msg);
+        } catch (IOException e) {
+            System.out.println("Error sending move message");
+        }
     }
 
     private void leave(Session session, String username, UserLeaveCommand command){

@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.HashMap;
 
 public class WebsocketFacade extends Endpoint {
     String serverUrl;
@@ -30,11 +31,12 @@ public class WebsocketFacade extends Endpoint {
 
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 public void onMessage(String message){
-                    var msg = new Gson().fromJson(message, ServerMessage.class);
-                    switch(msg.getServerMessageType()){
-                        case ERROR -> serverError((ServerErrorMessage) msg);
-                        case LOAD_GAME -> loadGame((ServerLoadMessage) msg);
-                        case NOTIFICATION -> notification((ServerNotificationMessage) msg);
+                    HashMap<String, String> msg = new Gson().fromJson(message, HashMap.class);
+                    switch(msg.get("serverMessageType")){
+                        case "ERROR" -> serverError(new Gson().fromJson(message, ServerErrorMessage.class));
+                        case "LOAD_GAME" -> loadGame(new Gson().fromJson(message, ServerLoadMessage.class));
+                        case "NOTIFICATION" -> notification(new Gson().fromJson(message, ServerNotificationMessage.class));
+                        case null, default -> throw new RuntimeException("Unknown message type!");
                     }
                 }
             });
@@ -44,15 +46,15 @@ public class WebsocketFacade extends Endpoint {
     }
 
     private void serverError(ServerErrorMessage msg){
-
+        System.out.println("Received an error");
     }
 
     private void loadGame(ServerLoadMessage msg){
-
+        System.out.println("Received a load");
     }
 
     private void notification(ServerNotificationMessage msg){
-
+        System.out.println("Received a notification");
     }
 
     public void send(String msg) throws Exception{
