@@ -61,7 +61,10 @@ public class PostlogREPL extends REPL {
                     System.out.println("Until next time!");
                 }
                 case "help" -> showHelp();
-                case null, default -> System.out.println("Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.");
+                case null, default -> {
+                    String output = "Command not recognized: '" + processInput(input)[0] + "'. Please try again, or type 'help' for help.";
+                    System.out.println(output);
+                }
             }
         }
     }

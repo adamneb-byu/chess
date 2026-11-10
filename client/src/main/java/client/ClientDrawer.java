@@ -62,17 +62,17 @@ public class ClientDrawer {
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
                 if(j == 0){
+                    whiteSquare = !whiteSquare;
                     System.out.print(EscapeSequences.RESET_BG_COLOR);
                     System.out.print("\n");
-                    whiteSquare = !whiteSquare;
                 }
                 if(i == 0 || i == 9){
                     drawBorderSquare(j, letters);
                 }else if(j == 0 || j == 9){
                     drawBorderSquare(i,numbers);
                 }else{
-                    ChessPiece piece;
                     ChessPosition position;
+                    ChessPiece piece;
                     if(color.equalsIgnoreCase("white")){
                         position = new ChessPosition(9-i,j);
                         piece = board.getPiece(position);
