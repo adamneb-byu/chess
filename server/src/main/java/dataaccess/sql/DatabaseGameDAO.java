@@ -127,7 +127,7 @@ public class DatabaseGameDAO implements GameDAO {
         try {
             game.makeMove(move);
             String gameString = new Gson().toJson(game);
-            DatabaseManager.executeStatement("UPDATE game SET game = \"" + gameString + "\" WHERE gameID = " + gameID);
+            DatabaseManager.executeStatement("UPDATE game SET chessGame = '" + gameString + "' WHERE gameID = " + gameID);
         }catch(InvalidMoveException e){
             throw new RuntimeException("Invalid move!");
         }

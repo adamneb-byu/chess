@@ -29,7 +29,7 @@ public class WebsocketHandler {
         var session = ctx.session;
 
         try{
-            var command = processCommand(ctx.message());//new Gson().fromJson(ctx.message(), UserGameCommand.class);
+            var command = processCommand(ctx.message());
             gameID = command.getGameID();
             String username = getUsername(command.getAuthToken());
 
