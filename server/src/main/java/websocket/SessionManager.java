@@ -28,10 +28,10 @@ public class SessionManager {
         }
     }
 
-    public void broadcast(int gameID, ServerMessage serverMessage) throws IOException {
+    public void broadcast(int gameID, ServerMessage serverMessage, Session excludedSession) throws IOException {
         String msg = new Gson().toJson(serverMessage);
         for(Session sess : sessions.get(gameID)){
-            if(sess.isOpen()){
+            if(sess.isOpen() && !sess.equals(excludedSession)){
                 sess.getRemote().sendString(msg);
             }
         }

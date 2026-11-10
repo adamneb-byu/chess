@@ -20,10 +20,18 @@ public class GameREPL extends REPL {
     private final String displayColor;
     private int gameID;
     private ChessGame gameState;
+    private WinState winState;
+
+    public enum WinState{
+        NONE,
+        WHITE,
+        BLACK
+    }
 
     public GameREPL(ChessClient parent, int gameID, String color) {
         this.color = color.toUpperCase();
         this.gameID = gameID;
+        winState = WinState.NONE;
         if(color.equalsIgnoreCase("observer")){
             displayColor = "WHITE";
         }else{
@@ -53,6 +61,11 @@ public class GameREPL extends REPL {
         while(running){
             printNewName();
             input = scanner.nextLine();
+            if(!winState.equals(WinState.NONE)){
+                if(input.equals("move") || input.equals("highlight") || input.equals("resign")){
+                    input = "invalid";
+                }
+            }
             switch(processInput(input)[0]){
                 case "leave" -> {
                     try{
@@ -187,8 +200,17 @@ public class GameREPL extends REPL {
     }
 
     private void processResign() throws Exception {
-        UserResignCommand command = new UserResignCommand(parentClient.facade.authToken,gameID);
-        parentClient.facade.wsFacade.send(new Gson().toJson(command));
+        if(confirmResign()) {
+            UserResignCommand command = new UserResignCommand(parentClient.facade.authToken, gameID);
+            parentClient.facade.wsFacade.send(new Gson().toJson(command));
+        }
+    }
+
+    private boolean confirmResign(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Type 'resign' and press enter again to confirm resignation: ");
+        String input = scanner.nextLine();
+        return input.equalsIgnoreCase("resign");
     }
 
     private void processLeave() throws Exception {

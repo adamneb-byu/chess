@@ -15,6 +15,7 @@ public class ChessGame {
 
     private TeamColor teamTurn;
     private ChessBoard board = new ChessBoard();
+    private boolean gameOver = false;
 
     public ChessGame() {
         teamTurn = TeamColor.WHITE;

@@ -47,12 +47,14 @@ public class WebsocketHandler {
 
     public void sendMessage(Session session, int gameID, ServerMessage message) throws IOException {
         //session.getRemote().sendString(new Gson().toJson(message));
-        sessionManager.broadcast(gameID, message);
+        sessionManager.broadcast(gameID, message, session);
     }
 
-    private void connect(Session session, String username, UserConnectCommand command) throws IOException {
+    private void connect(Session session, String username, UserConnectCommand command) throws IOException, DataAccessException {
         System.out.println("Received message! " + username + " has joined the fray!");
         sessionManager.addSession(command.getGameID(), session);
+        var msg = new ServerLoadMessage(new Gson().toJson(generalHandler.getGame(command.getGameID())));
+        session.getRemote().sendString(new Gson().toJson(msg));
         sendMessage(session, command.getGameID(), new ServerNotificationMessage(username + " has joined the game"));
     }
 
@@ -97,6 +99,7 @@ public class WebsocketHandler {
 
     private void resign(Session session, String username, UserResignCommand command){
         System.out.println("Received message! Yeah that's right raise the white flag " + username + " you coward");
+
     }
 
     private String getUsername(String authToken) throws DataAccessException {
