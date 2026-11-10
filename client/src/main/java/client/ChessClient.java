@@ -5,7 +5,7 @@ import chess.ChessPiece;
 
 public class ChessClient {
     private boolean gameState;
-    private static REPL repl;
+    public REPL repl;
     public ServerFacade facade;
 
     private enum GameStates{
@@ -16,7 +16,7 @@ public class ChessClient {
 
     public ChessClient() {
         System.out.println("♕ Welcome to the 240 Chess Client ♕");
-        facade = new ServerFacade("http://localhost:8080");
+        facade = new ServerFacade("http://localhost:8080", this);
         initializeREPL();
     }
 

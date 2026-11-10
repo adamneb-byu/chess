@@ -17,7 +17,6 @@ public class GameREPL extends REPL {
     public boolean running;
     private final String color;
     private final String displayColor;
-    private ChessBoard board;
     private int gameID;
     private ChessGame gameState;
 
@@ -30,6 +29,7 @@ public class GameREPL extends REPL {
             displayColor = color.toUpperCase();
         }
         parentClient = parent;
+        parentClient.facade.wsFacade.updateREPL(this);
         updateBoard();
         running = true;
         run();
@@ -38,7 +38,7 @@ public class GameREPL extends REPL {
     private void run() {
         Scanner scanner = new Scanner(System.in);
         String input = "";
-        ClientDrawer.drawBoard(board,displayColor);
+        ClientDrawer.drawBoard(gameState.getBoard(),displayColor);
         while(running){
             System.out.print("[" + color + "] >>> ");
             input = scanner.nextLine();
@@ -82,7 +82,7 @@ public class GameREPL extends REPL {
                 case "highlight" -> {
                     processHighlight(processInput(input));
                 }
-                case "redraw" -> ClientDrawer.drawBoard(board, displayColor);
+                case "redraw" -> ClientDrawer.drawBoard(gameState.getBoard(), displayColor);
                 case "resign" -> {
                     try {
                         processResign();
@@ -132,7 +132,7 @@ public class GameREPL extends REPL {
     }
 
     private ChessPiece.PieceType checkPromotion(ChessPosition start, ChessPosition end){
-        if(board.getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN &&
+        if(gameState.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN &&
                 (end.getRow() == 1 || end.getRow() == 8)){
             Scanner getPromo = new Scanner(System.in);
             System.out.println("Your pawn is about to promote! Enter N, R, B, or Q to choose a promotion piece: ");
@@ -168,7 +168,7 @@ public class GameREPL extends REPL {
         } catch (Exception e) {
             throw new RuntimeException("Invalid position. Try again.");
         }
-        ClientDrawer.drawHighlightedBoard(board,displayColor,chessPos);
+        ClientDrawer.drawHighlightedBoard(gameState.getBoard(),displayColor,chessPos);
     }
 
     private void processResign() throws Exception {
@@ -194,6 +194,11 @@ public class GameREPL extends REPL {
         return new ChessPosition(row, col);
     }
 
+    public void loadGame(ChessGame newGame){
+        gameState = newGame;
+        ClientDrawer.drawBoard(gameState.getBoard(), displayColor);
+    }
+
     private void updateBoard(){
         ArrayList games = (ArrayList) parentClient.facade.listGames().get("games");
         for(Object gameObject : games){
@@ -201,9 +206,7 @@ public class GameREPL extends REPL {
             Integer id = ((Double) game.get("gameID")).intValue();
             if(id == gameID){
                 String gameJson = new Gson().toJson(game.get("game"));
-                ChessGame chessGame = new Gson().fromJson(gameJson, ChessGame.class);
-                board = chessGame.getBoard();
-                gameState = chessGame;
+                gameState = new Gson().fromJson(gameJson, ChessGame.class);
             }
         }
     }

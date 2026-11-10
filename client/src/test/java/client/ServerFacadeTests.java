@@ -22,7 +22,7 @@ public class ServerFacadeTests {
     public static void init() {
         server = new Server();
         var port = server.run(0);
-        facade = new ServerFacade("http://localhost:" + port);
+        facade = new ServerFacade("http://localhost:" + port, null);
         handler = new GeneralHandler();
         System.out.println("Started test HTTP server on " + port);
     }

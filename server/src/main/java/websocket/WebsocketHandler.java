@@ -59,6 +59,8 @@ public class WebsocketHandler {
         try{
             generalHandler.updateGame(command.getGameID(), command.getMove());
             msg = new ServerNotificationMessage(username + " made a move.");
+            String updatedGame = new Gson().toJson(generalHandler.getGame(command.getGameID()).game());
+            sendMessage(session, command.getGameID(), new ServerLoadMessage(updatedGame));
         }catch (Exception e){
             msg = new ServerErrorMessage("Server error!");
         }

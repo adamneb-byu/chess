@@ -15,10 +15,12 @@ public class ServerFacade {
     String serverUrl;
     String authToken;
     public WebsocketFacade wsFacade;
+    public ChessClient parentClient;
 
-    public ServerFacade(String url){
+    public ServerFacade(String url, ChessClient client){
         serverUrl = url;
         wsFacade = new WebsocketFacade();
+        parentClient = client;
     }
 
     public void clear(){

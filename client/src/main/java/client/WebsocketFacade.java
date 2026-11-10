@@ -16,6 +16,7 @@ import java.util.HashMap;
 public class WebsocketFacade extends Endpoint {
     String serverUrl;
     private Session session;
+    private GameREPL gameREPL;
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
@@ -50,7 +51,9 @@ public class WebsocketFacade extends Endpoint {
     }
 
     private void loadGame(ServerLoadMessage msg){
-        System.out.println("Received a load");
+        if(gameREPL != null) {
+            gameREPL.loadGame(msg.getDeserializedGame());
+        }
     }
 
     private void notification(ServerNotificationMessage msg){
@@ -59,5 +62,9 @@ public class WebsocketFacade extends Endpoint {
 
     public void send(String msg) throws Exception{
         this.session.getBasicRemote().sendText(msg);
+    }
+
+    public void updateREPL(GameREPL repl){
+        gameREPL = repl;
     }
 }
