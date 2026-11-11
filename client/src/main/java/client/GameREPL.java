@@ -58,7 +58,7 @@ public class GameREPL extends REPL {
     private void run() {
         Scanner scanner = new Scanner(System.in);
         String input = "";
-        ClientDrawer.drawBoard(gameState.getBoard(),displayColor);
+        //ClientDrawer.drawBoard(gameState.getBoard(),displayColor);
         while(running){
             printNewName();
             input = scanner.nextLine();
@@ -237,6 +237,7 @@ public class GameREPL extends REPL {
     public void loadGame(ChessGame newGame){
         gameState = newGame;
         ClientDrawer.drawBoard(gameState.getBoard(), displayColor);
+        printNewName();
     }
 
     private void updateBoard(){

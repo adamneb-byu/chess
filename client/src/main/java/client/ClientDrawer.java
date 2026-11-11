@@ -50,7 +50,6 @@ public class ClientDrawer {
     }
 
     public static void drawHighlightedBoard(ChessBoard board, String color, ArrayList<ChessMove> validMoves){
-        //ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) PieceMovesCalculator.pieceMoves(board,pos);
         boolean whiteSquare = true;
         char[] letters = {'a','b','c','d','e','f','g','h'};
         char[] numbers = {'8','7','6','5','4','3','2','1'};
@@ -85,7 +84,8 @@ public class ClientDrawer {
                         System.out.print(EscapeSequences.SET_BG_COLOR_BLUE);
                     }
                     if(positionHighlighted(position,validMoves)){
-                        System.out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                        System.out.print(EscapeSequences.SET_BG_COLOR_MAGENTA);
+
                     }
                     if(piece != null){
                         drawPiece(piece);
