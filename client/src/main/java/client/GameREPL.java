@@ -198,6 +198,7 @@ public class GameREPL extends REPL {
             throw new RuntimeException("Invalid position. Try again.");
         }
         ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameState.validMoves(chessPos);
+        validMoves.add(new ChessMove(chessPos,chessPos,null));
         ClientDrawer.drawHighlightedBoard(gameState.getBoard(),displayColor, validMoves);
     }
 
