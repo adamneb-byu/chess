@@ -113,9 +113,9 @@ public class DatabaseGameDAO implements GameDAO {
             throw new NotFoundException("Error: game not found");
         }
 
-        if(game.whiteUsername().equals(username)){
+        if(game.whiteUsername() != null && game.whiteUsername().equals(username)){
             DatabaseManager.executeStatement("UPDATE game SET whiteUsername = NULL WHERE gameID = " + gameID);
-        }else if(game.blackUsername().equals(username)){
+        }else if(game.blackUsername() != null && game.blackUsername().equals(username)){
             DatabaseManager.executeStatement("UPDATE game SET blackUsername = NULL WHERE gameID = " + gameID);
         }else{
             throw new NotFoundException("Error: user with given name is not in the game");

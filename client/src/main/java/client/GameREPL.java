@@ -145,7 +145,6 @@ public class GameREPL extends REPL {
             throw new RuntimeException("Invalid position. Try again.");
         }
         ChessPiece.PieceType promo = checkPromotion(chessPosFrom, chessPosTo);
-        System.out.println("Move from " + chessPosFrom + " to " + chessPosTo);
         String authToken = parentClient.facade.authToken;
         ChessMove myMove = new ChessMove(chessPosFrom, chessPosTo, promo);
         var command = new UserMakeMoveCommand(authToken,gameID,myMove);

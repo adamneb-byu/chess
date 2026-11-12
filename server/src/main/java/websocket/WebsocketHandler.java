@@ -1,6 +1,7 @@
 package websocket;
 
 import chess.ChessGame;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import data.AuthData;
 import data.UserData;
@@ -14,6 +15,7 @@ import websocket.commands.*;
 import websocket.messages.*;
 //import jakarta.websocket.*;
 
+import javax.management.RuntimeOperationsException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +56,7 @@ public class WebsocketHandler {
         sessionManager.broadcast(gameID, message, session);
     }
 
-    private void connect(Session session, String username, UserConnectCommand command) throws IOException, DataAccessException {
+    private void connect(Session session, String username, UserConnectCommand command) throws IOException {
         System.out.println("Received message! " + username + " has joined the fray!");
         sessionManager.addSession(command.getGameID(), session);
         try{
@@ -63,7 +65,16 @@ public class WebsocketHandler {
             }
             var msg = new ServerLoadMessage(new Gson().toJson(generalHandler.getGame(command.getGameID())));
             session.getRemote().sendString(new Gson().toJson(msg));
-            sendMessage(session, command.getGameID(), new ServerNotificationMessage(username + " has joined the game"));
+            var game = generalHandler.getGame(command.getGameID());
+            ServerNotificationMessage msg2;
+            if(game.whiteUsername() != null && game.whiteUsername().equals(username)){
+                msg2 = new ServerNotificationMessage(username + " has joined the game as white");
+            }else if(game.blackUsername() != null && game.blackUsername().equals(username)) {
+                msg2 = new ServerNotificationMessage(username + " has joined the game as black");
+            }else{
+                msg2 = new ServerNotificationMessage(username + " has joined the game as an observer");
+            }
+            sendMessage(session, command.getGameID(), msg2);
         } catch (Exception e) {
             var msg = new ServerErrorMessage("Error: Invalid game ID");
             session.getRemote().sendString(new Gson().toJson(msg));
@@ -89,6 +100,9 @@ public class WebsocketHandler {
             generalHandler.updateGame(command.getGameID(), command.getMove());
             msg = new ServerNotificationMessage(username + " made a move.");
             var game = generalHandler.getGame(command.getGameID()).game();
+            if(game.isInCheck(ChessGame.getOtherTeam(teamTurn))){
+                msg = new ServerNotificationMessage(username + " made a move, putting the opponent in check!");
+            }
             String updatedGame = new Gson().toJson(game);
             sendMessage(null, command.getGameID(), new ServerLoadMessage(updatedGame));
             ServerMessage endgameMsg;
@@ -104,6 +118,8 @@ public class WebsocketHandler {
             if(endgameMsg != null){
                 sendMessage(null, command.getGameID(), endgameMsg);
             }
+        }catch (RuntimeException e){
+            msg = new ServerErrorMessage("Error: " + e.getMessage());
         }catch (Exception e){
             msg = new ServerErrorMessage("Server error!");
         }
