@@ -1,6 +1,7 @@
 package websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import data.AuthData;
@@ -85,6 +86,7 @@ public class WebsocketHandler {
     private void makeMove(Session session, String username, UserMakeMoveCommand command){
         System.out.println("Received message! " + command.getMove());
         ServerMessage msg;
+        ServerMessage endgameMsg;
         try{
             if(generalHandler.getGame(command.getGameID()).game().gameOver){
                 throw new RuntimeException("The game hath been overed!");
@@ -98,14 +100,15 @@ public class WebsocketHandler {
                 throw new RuntimeException("It's not your turn!");
             }
             generalHandler.updateGame(command.getGameID(), command.getMove());
-            msg = new ServerNotificationMessage(username + " made a move.");
+            String moveDetails = extractMoveDetails(command.getMove());
+            msg = new ServerNotificationMessage(username + " made a move from + " + moveDetails + ".");
             var game = generalHandler.getGame(command.getGameID()).game();
             if(game.isInCheck(ChessGame.getOtherTeam(teamTurn))){
-                msg = new ServerNotificationMessage(username + " made a move, putting the opponent in check!");
+                msg = new ServerNotificationMessage(username + " made a move from " + moveDetails + ", putting the opponent in check!");
             }
             String updatedGame = new Gson().toJson(game);
             sendMessage(null, command.getGameID(), new ServerLoadMessage(updatedGame));
-            ServerMessage endgameMsg;
+
             if(game.isInCheckmate(ChessGame.TeamColor.WHITE)){
                 endgameMsg = new ServerNotificationMessage("White is in checkmate! Black wins!");
             }else if(game.isInCheckmate(ChessGame.TeamColor.BLACK)){
@@ -115,19 +118,22 @@ public class WebsocketHandler {
             }else{
                 endgameMsg = null;
             }
-            if(endgameMsg != null){
-                sendMessage(null, command.getGameID(), endgameMsg);
-            }
+
         }catch (RuntimeException e){
             msg = new ServerErrorMessage("Error: " + e.getMessage());
+            endgameMsg = null;
         }catch (Exception e){
             msg = new ServerErrorMessage("Server error!");
+            endgameMsg = null;
         }
         try {
             if(msg.getServerMessageType().equals(ServerMessage.ServerMessageType.ERROR)){
                 session.getRemote().sendString(new Gson().toJson(msg));
             }else{
                 sendMessage(session, command.getGameID(), msg);
+                if(endgameMsg != null){
+                    sendMessage(null, command.getGameID(), endgameMsg);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error sending move message");
@@ -209,5 +215,21 @@ public class WebsocketHandler {
             case null, default -> throw new RuntimeException("Unrecognized command type");
 
         }
+    }
+
+    private String extractMoveDetails(ChessMove move){
+        var startPos = move.getStartPosition();
+        var endPos = move.getEndPosition();
+
+        String startString = moveNumToChar(startPos.getColumn()) + startPos.getRow();
+        String endString = moveNumToChar(endPos.getColumn()) + endPos.getRow();
+
+        return startString + " to " + endString;
+    }
+
+    private String moveNumToChar(int num){
+        char myChar = 96;
+        myChar = (char) (myChar + num);
+        return myChar + "";
     }
 }

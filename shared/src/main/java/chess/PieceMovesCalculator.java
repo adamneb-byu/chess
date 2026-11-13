@@ -7,6 +7,9 @@ import java.util.List;
 public class PieceMovesCalculator {
     public static Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition){
         ChessPiece piece = board.getPiece(myPosition);
+        if(piece == null){
+            return new ArrayList<>();
+        }
         switch(piece.getPieceType()){
             case KING -> {
                 return KingMovesCalculator.pieceMoves(board, myPosition);

@@ -102,7 +102,11 @@ public class GameREPL extends REPL {
                             "- see possible commands. You are here!");
                 }
                 case "move" -> {
-                    processMove(processInput(input));
+                    try {
+                        processMove(processInput(input));
+                    }catch(RuntimeException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "highlight" -> {
                     processHighlight(processInput(input));
@@ -196,7 +200,10 @@ public class GameREPL extends REPL {
         } catch (Exception e) {
             throw new RuntimeException("Invalid position. Try again.");
         }
-        ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) gameState.validMoves(chessPos);
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        if(gameState.getBoard().getPiece(chessPos) != null){
+            validMoves = (ArrayList<ChessMove>) gameState.validMoves(chessPos);
+        }
         validMoves.add(new ChessMove(chessPos,chessPos,null));
         ClientDrawer.drawHighlightedBoard(gameState.getBoard(),displayColor, validMoves);
     }
