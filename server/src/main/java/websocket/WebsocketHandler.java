@@ -101,7 +101,7 @@ public class WebsocketHandler {
             }
             generalHandler.updateGame(command.getGameID(), command.getMove());
             String moveDetails = extractMoveDetails(command.getMove());
-            msg = new ServerNotificationMessage(username + " made a move from + " + moveDetails + ".");
+            msg = new ServerNotificationMessage(username + " made a move from " + moveDetails + ".");
             var game = generalHandler.getGame(command.getGameID()).game();
             if(game.isInCheck(ChessGame.getOtherTeam(teamTurn))){
                 msg = new ServerNotificationMessage(username + " made a move from " + moveDetails + ", putting the opponent in check!");
