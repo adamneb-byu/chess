@@ -109,7 +109,11 @@ public class GameREPL extends REPL {
                     }
                 }
                 case "highlight" -> {
-                    processHighlight(processInput(input));
+                    try {
+                        processHighlight(processInput(input));
+                    }catch(RuntimeException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "redraw" -> ClientDrawer.drawBoard(gameState.getBoard(), displayColor);
                 case "resign" -> {
