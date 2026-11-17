@@ -87,12 +87,18 @@ public class WebsocketHandler {
         System.out.println("Received message! " + command.getMove());
         ServerMessage msg;
         ServerMessage endgameMsg;
+        String opponentUsername = "Opponent";
         try{
             if(generalHandler.getGame(command.getGameID()).game().gameOver){
                 throw new RuntimeException("The game hath been overed!");
             }
             var teamTurn = generalHandler.getGame(command.getGameID()).game().getTeamTurn();
             var gameData = generalHandler.getGame(command.getGameID());
+            if(username.equals(gameData.whiteUsername())){
+                opponentUsername = gameData.blackUsername();
+            }else if(username.equals(gameData.blackUsername())){
+                opponentUsername = gameData.whiteUsername();
+            }
             if(teamTurn.equals(ChessGame.TeamColor.WHITE) && !username.equals(gameData.whiteUsername())){
                 throw new RuntimeException("It's not your turn!");
             }
@@ -104,15 +110,17 @@ public class WebsocketHandler {
             msg = new ServerNotificationMessage(username + " made a move from " + moveDetails + ".");
             var game = generalHandler.getGame(command.getGameID()).game();
             if(game.isInCheck(ChessGame.getOtherTeam(teamTurn))){
-                msg = new ServerNotificationMessage(username + " made a move from " + moveDetails + ", putting the opponent in check!");
+                msg = new ServerNotificationMessage(username + " made a move from " + moveDetails + ".\n" + opponentUsername + " is in check!");
             }
             String updatedGame = new Gson().toJson(game);
             sendMessage(null, command.getGameID(), new ServerLoadMessage(updatedGame));
 
+            String bUser = gameData.blackUsername();
+            String wUser = gameData.whiteUsername();
             if(game.isInCheckmate(ChessGame.TeamColor.WHITE)){
-                endgameMsg = new ServerNotificationMessage("White is in checkmate! Black wins!");
+                endgameMsg = new ServerNotificationMessage(wUser + " is in checkmate! " + bUser + " wins!");
             }else if(game.isInCheckmate(ChessGame.TeamColor.BLACK)){
-                endgameMsg = new ServerNotificationMessage("Black is in checkmate! White wins!");
+                endgameMsg = new ServerNotificationMessage(bUser + " is in checkmate! " + wUser + " wins!");
             }else if(game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)){
                 endgameMsg = new ServerNotificationMessage("Stalemate! Nobody wins!");
             }else{
@@ -147,6 +155,7 @@ public class WebsocketHandler {
         if(!username.equals(gameData.whiteUsername()) && !username.equals(gameData.blackUsername())){
             msg = new ServerNotificationMessage("Observer " + username + " left the game");
             sendMessage(session, command.getGameID(), msg);
+            sessionManager.removeSession(command.getGameID(), session);
         }else {
             try {
                 generalHandler.userLeave(username, command.getGameID());
